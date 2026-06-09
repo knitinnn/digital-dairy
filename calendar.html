@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Calendar — View your diary entries and important dates on an interactive calendar." />
+  <title>Calendar — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+</head>
+<body>
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item active"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / Calendar</div>
+        <h1 class="page-title">Calendar</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+        <button id="cal-today" class="btn btn-secondary btn-sm">Today</button>
+        <button class="btn btn-primary btn-sm" onclick="window.location.href='diary.html'">✏️ New Entry</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="calendar-wrapper">
+
+        <!-- Calendar Main -->
+        <div class="calendar-main">
+          <div class="card">
+            <!-- Month Navigation -->
+            <div class="calendar-nav">
+              <button id="cal-prev" class="calendar-nav-btn" aria-label="Previous month">‹</button>
+              <h2 id="cal-month-title" class="calendar-month-title">Loading…</h2>
+              <button id="cal-next" class="calendar-nav-btn" aria-label="Next month">›</button>
+            </div>
+
+            <!-- Day Headers -->
+            <div class="calendar-grid">
+              <div class="calendar-day-header">Sun</div>
+              <div class="calendar-day-header">Mon</div>
+              <div class="calendar-day-header">Tue</div>
+              <div class="calendar-day-header">Wed</div>
+              <div class="calendar-day-header">Thu</div>
+              <div class="calendar-day-header">Fri</div>
+              <div class="calendar-day-header">Sat</div>
+            </div>
+
+            <!-- Calendar Cells -->
+            <div id="cal-grid-body" class="calendar-grid" role="grid" aria-label="Calendar">
+              <!-- Rendered by JS -->
+            </div>
+
+            <!-- Legend -->
+            <div class="divider"></div>
+            <div class="calendar-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--sage)"></div>
+                <span>Diary entry</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--gold)"></div>
+                <span>Important date</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--rose)"></div>
+                <span>Reminder</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--rose-dark)"></div>
+                <span>Today</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Day Panel Sidebar -->
+        <div>
+          <div class="card day-panel">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Selected Day</div>
+                <div class="card-subtitle" id="day-panel-title">Select a date</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="window.location.href='diary.html'">+ Entry</button>
+            </div>
+            <div id="day-panel-content">
+              <div class="empty-state" style="padding:var(--space-8)">
+                <div class="empty-state-icon" style="font-size:2rem">📅</div>
+                <div class="empty-state-title" style="font-size:.95rem">Click a date</div>
+                <div class="empty-state-desc" style="font-size:.78rem">View entries, events, and reminders</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast-container"></div>
+<script src="js/app.js"></script>
+<script src="js/calendar.js"></script>
+</body>
+</html>

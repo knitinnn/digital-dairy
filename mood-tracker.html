@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Mood Tracker — Track your daily moods and view emotional insights." />
+  <title>Mood Tracker — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+</head>
+<body>
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item active"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / Mood Tracker</div>
+        <h1 class="page-title">Mood Tracker</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <!-- Log Today's Mood -->
+      <div class="card animate-fade-in" style="margin-bottom:var(--space-6)">
+        <div class="card-header">
+          <div>
+            <div class="card-title">How are you feeling today?</div>
+            <div class="card-subtitle" id="mood-today-label">Log your mood for today</div>
+          </div>
+          <span id="current-today-mood" class="mood-badge"></span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:var(--space-3)" id="mood-select-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <div class="mood-tracker-layout">
+        <!-- Left: Mood History -->
+        <div>
+          <!-- Monthly Summary -->
+          <div class="card animate-fade-in" style="margin-bottom:var(--space-5)">
+            <div class="card-header">
+              <div class="card-title">This Month's Summary</div>
+              <div id="month-label" style="font-size:.82rem;color:var(--text-muted)"></div>
+            </div>
+            <div class="mood-bar-container" id="mood-summary-bars"></div>
+          </div>
+
+          <!-- Mood History Log -->
+          <div class="card animate-fade-in">
+            <div class="card-header">
+              <div class="card-title">Mood History</div>
+              <div class="card-subtitle" id="total-mood-count">0 logs</div>
+            </div>
+            <div id="mood-history-list"></div>
+          </div>
+        </div>
+
+        <!-- Right: Stats -->
+        <div>
+          <div class="card animate-fade-in" style="margin-bottom:var(--space-5)">
+            <div class="card-title" style="margin-bottom:var(--space-5)">Most Common Mood</div>
+            <div id="top-mood-display" style="text-align:center;padding:var(--space-4) 0"></div>
+          </div>
+
+          <div class="card animate-fade-in">
+            <div class="card-title" style="margin-bottom:var(--space-5)">All-Time Stats</div>
+            <div id="alltime-stats"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div class="toast-container"></div>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const colors = {
+    happy: '#c9a84c', excited: '#c47a5a', calm: '#8aad8f',
+    productive: '#a89bb5', tired: '#7d5a3c', sad: '#6b8ab5'
+  };
+
+  function renderMoodSelectGrid() {
+    const container = document.getElementById('mood-select-grid');
+    if (!container) return;
+
+    const todayMood = MoodLogs.getTodayMood();
+    const todayEl   = document.getElementById('current-today-mood');
+    const labelEl   = document.getElementById('mood-today-label');
+
+    if (todayMood) {
+      const m = getMoodMeta(todayMood);
+      if (todayEl) { todayEl.className = `mood-badge mood-${todayMood}`; todayEl.textContent = `${m.emoji} ${m.label}`; }
+      if (labelEl) labelEl.textContent = `Today's mood: ${m.label}`;
+    } else {
+      if (todayEl) { todayEl.className = ''; todayEl.textContent = ''; }
+      if (labelEl) labelEl.textContent = 'Tap a mood to log it for today';
+    }
+
+    container.innerHTML = MOODS.map(m => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:var(--space-2);
+           padding:var(--space-4) var(--space-2);
+           background:${todayMood===m.key?`rgba(${hexToRgb(m.color)},0.15)`:'var(--bg-secondary)'};
+           border:2px solid ${todayMood===m.key?m.color:'var(--border-light)'};
+           border-radius:var(--radius-lg);cursor:pointer;transition:all .2s ease"
+           onclick="logMood('${m.key}')"
+           role="button" tabindex="0" aria-label="Log mood: ${m.label}">
+        <span style="font-size:2rem">${m.emoji}</span>
+        <span style="font-size:.75rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em">${m.label}</span>
+      </div>`).join('');
+  }
+
+  function hexToRgb(hex) {
+    const match = hex.match(/^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i);
+    if (!match) return '100,100,100';
+    return `${parseInt(match[1],16)},${parseInt(match[2],16)},${parseInt(match[3],16)}`;
+  }
+
+  window.logMood = (key) => {
+    MoodLogs.log(key);
+    renderMoodSelectGrid();
+    renderMoodHistory();
+    renderSummary();
+    renderAlltimeStats();
+    showToast(`Mood logged: ${getMoodMeta(key).label} ${getMoodMeta(key).emoji}`, 'success');
+  };
+
+  function renderMoodHistory() {
+    const container = document.getElementById('mood-history-list');
+    if (!container) return;
+
+    const all = MoodLogs.getAll().slice(0, 30);
+    const totalEl = document.getElementById('total-mood-count');
+    if (totalEl) totalEl.textContent = `${MoodLogs.getAll().length} logs total`;
+
+    if (all.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding:var(--space-8)">
+          <div class="empty-state-icon" style="font-size:2.5rem">😶</div>
+          <div class="empty-state-title" style="font-size:1rem">No mood logs yet</div>
+          <div class="empty-state-desc" style="font-size:.82rem">Start tracking your emotional journey daily.</div>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = all.map((log, i) => {
+      const m = getMoodMeta(log.mood);
+      return `
+        <div class="mood-log-card animate-fade-in" style="animation-delay:${i*30}ms">
+          <span class="mood-log-emoji">${m.emoji}</span>
+          <div class="mood-log-body">
+            <div class="mood-log-mood">${m.label}</div>
+            <div class="mood-log-date">📅 ${formatDate(log.date, { weekday:'short', month:'short', day:'numeric', year:'numeric' })}</div>
+          </div>
+          <span class="mood-badge mood-${log.mood}" style="font-size:.7rem">${m.label}</span>
+        </div>`;
+    }).join('');
+  }
+
+  function renderSummary() {
+    const now   = new Date();
+    const month = now.getMonth() + 1;
+    const year  = now.getFullYear();
+    const logs  = MoodLogs.getByMonth(year, month);
+    const max   = Math.max(logs.length, 1);
+
+    const label = document.getElementById('month-label');
+    if (label) label.textContent = `${now.toLocaleDateString('en-US',{month:'long'})} — ${logs.length} logs`;
+
+    const counts = {};
+    MOODS.forEach(m => counts[m.key] = 0);
+    logs.forEach(l => { if (counts[l.mood] !== undefined) counts[l.mood]++; });
+    const maxVal = Math.max(...Object.values(counts), 1);
+
+    const container = document.getElementById('mood-summary-bars');
+    if (!container) return;
+
+    container.innerHTML = MOODS.map(m => `
+      <div class="mood-bar-row">
+        <span class="mood-bar-label">${m.emoji} ${m.label}</span>
+        <div class="mood-bar-track">
+          <div class="mood-bar-fill" style="width:${(counts[m.key]/maxVal)*100}%;background:${colors[m.key]}"></div>
+        </div>
+        <span class="mood-bar-count">${counts[m.key]}</span>
+      </div>`).join('');
+  }
+
+  function renderAlltimeStats() {
+    const summary = MoodLogs.getSummary();
+    const total   = Object.values(summary).reduce((a,b) => a+b, 0);
+    const topKey  = Object.entries(summary).sort((a,b)=>b[1]-a[1])[0]?.[0];
+    const topMeta = topKey ? getMoodMeta(topKey) : null;
+
+    const topEl = document.getElementById('top-mood-display');
+    if (topEl && topMeta) {
+      topEl.innerHTML = `
+        <div style="font-size:3rem;margin-bottom:var(--space-3)">${topMeta.emoji}</div>
+        <div style="font-family:var(--font-display);font-size:1.1rem;font-weight:600;color:var(--text-primary)">${topMeta.label}</div>
+        <div style="font-size:.78rem;color:var(--text-muted);margin-top:4px">${summary[topKey] || 0} times logged</div>`;
+    } else if (topEl) {
+      topEl.innerHTML = `<div style="color:var(--text-muted);font-size:.875rem">No moods logged yet</div>`;
+    }
+
+    const statsEl = document.getElementById('alltime-stats');
+    if (statsEl) {
+      statsEl.innerHTML = MOODS.map(m => {
+        const pct = total > 0 ? Math.round((summary[m.key]/total)*100) : 0;
+        return `
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-2) 0;border-bottom:1px solid var(--border-light)">
+            <span style="font-size:.85rem;color:var(--text-secondary)">${m.emoji} ${m.label}</span>
+            <div style="display:flex;align-items:center;gap:var(--space-3)">
+              <span style="font-size:.78rem;color:var(--text-muted);width:28px;text-align:right">${summary[m.key]}</span>
+              <span style="font-size:.75rem;font-weight:600;color:${colors[m.key]}">${pct}%</span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+  }
+
+  renderMoodSelectGrid();
+  renderMoodHistory();
+  renderSummary();
+  renderAlltimeStats();
+});
+</script>
+</body>
+</html>

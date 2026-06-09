@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary — Track important dates like birthdays, anniversaries, and achievements." />
+  <title>Important Dates — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+</head>
+<body>
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item active"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / Important Dates</div>
+        <h1 class="page-title">Important Dates</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+        <button id="new-date-btn" class="btn btn-primary">＋ Add Date</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <!-- Category Filter -->
+      <div style="display:flex;gap:var(--space-2);margin-bottom:var(--space-6);flex-wrap:wrap">
+        <button class="filter-chip active" data-filter="all">🌸 All</button>
+        <button class="filter-chip" data-filter="birthday">🎂 Birthdays</button>
+        <button class="filter-chip" data-filter="anniversary">💍 Anniversaries</button>
+        <button class="filter-chip" data-filter="achievement">🏆 Achievements</button>
+        <button class="filter-chip" data-filter="custom">📅 Custom</button>
+      </div>
+
+      <!-- Dates Grid -->
+      <div id="dates-grid" class="dates-grid">
+        <div class="skeleton" style="height:200px;border-radius:20px"></div>
+        <div class="skeleton" style="height:200px;border-radius:20px"></div>
+        <div class="skeleton" style="height:200px;border-radius:20px"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ── Add/Edit Date Modal ──────────────────────────────────── -->
+<div id="date-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="date-modal-title">Add Important Date</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="d-name">Event Name *</label>
+        <input type="text" id="d-name" class="form-input" placeholder="e.g. Mom's Birthday, Wedding Anniversary…" maxlength="80" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="d-date">Date *</label>
+        <input type="date" id="d-date" class="form-input" />
+        <div class="form-hint">The year in the date is used for age/year calculations; the event repeats annually.</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="d-category">Category</label>
+        <select id="d-category" class="form-select">
+          <option value="birthday">🎂 Birthday</option>
+          <option value="anniversary">💍 Anniversary</option>
+          <option value="achievement">🏆 Achievement</option>
+          <option value="custom">📅 Custom Event</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="d-note">Notes</label>
+        <textarea id="d-note" class="form-textarea" placeholder="Special notes about this event…" rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('date-modal')">Cancel</button>
+      <button id="save-date-btn" class="btn btn-primary">Save Date</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Confirm Delete Modal ─────────────────────────────────── -->
+<div id="confirm-delete-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2 class="modal-title">Delete Event</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-secondary);line-height:1.7">
+        Delete <strong id="confirm-delete-name"></strong>? This cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('confirm-delete-modal')">Cancel</button>
+      <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="js/app.js"></script>
+<script>
+  let dateFilter    = 'all';
+  let currentDateId = null;
+
+  function renderDatesGrid() {
+    const container = document.getElementById('dates-grid');
+    if (!container) return;
+
+    let dates = ImportantDates.getAll();
+    if (dateFilter !== 'all') dates = dates.filter(d => d.category === dateFilter);
+
+    // Sort by days until next occurrence
+    const today = new Date(); today.setHours(0,0,0,0);
+    dates = dates.map(d => {
+      const next = nextOccurrence(d.date);
+      return { ...d, _next: next, _days: daysBetween(today, next) };
+    }).sort((a, b) => a._days - b._days);
+
+    if (dates.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="grid-column:1/-1">
+          <div class="empty-state-icon">🎂</div>
+          <div class="empty-state-title">No important dates yet</div>
+          <div class="empty-state-desc">Track birthdays, anniversaries, achievements and never miss a special moment.</div>
+          <button class="btn btn-primary" onclick="openDateModal()">＋ Add First Date</button>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = dates.map((d, i) => renderDateCard(d, i)).join('');
+  }
+
+  function renderDateCard(d, i) {
+    const cat = getCategoryMeta(d.category);
+    const isToday  = d._days === 0;
+    const isSoon   = d._days > 0 && d._days <= 7;
+    const origYear = d.date ? new Date(d.date + 'T00:00:00').getFullYear() : null;
+    const thisYear = new Date().getFullYear();
+    const years    = origYear ? thisYear - origYear : null;
+
+    let countdownText = '';
+    if (isToday) countdownText = `🎉 Today!`;
+    else if (d._days === 1) countdownText = 'Tomorrow';
+    else countdownText = `In ${d._days} days`;
+
+    return `
+      <div class="date-card ${d.category} animate-fade-in" style="animation-delay:${i*60}ms">
+        <div class="date-card-top">
+          <span class="date-card-icon">${cat.icon}</span>
+          <span class="tag ${d.category==='birthday'?'tag-rose':d.category==='anniversary'?'tag-gold':d.category==='achievement'?'tag-sage':'tag-lavender'}">${cat.label}</span>
+        </div>
+        <div class="date-card-name">${escape(d.name)}</div>
+        <div class="date-card-date">
+          📅 ${formatDate(d.date, { month:'long', day:'numeric' })}
+          ${years !== null && years > 0 ? ` · ${years} year${years!==1?'s':''} ago` : ''}
+        </div>
+        <span class="countdown-badge ${isToday?'today':isSoon?'soon':''}">
+          ${isToday ? '🎉' : '⏳'} ${countdownText}
+        </span>
+        ${d.note ? `<div class="date-card-note">${escape(d.note)}</div>` : ''}
+        <div class="date-card-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openDateModal('${d.id}');event.stopPropagation()">✏️ Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="confirmDeleteDate('${d.id}');event.stopPropagation()">🗑️ Delete</button>
+        </div>
+      </div>`;
+  }
+
+  function openDateModal(id = null) {
+    currentDateId = id;
+    const titleEl = document.getElementById('date-modal-title');
+
+    if (id) {
+      const d = ImportantDates.getById(id);
+      if (!d) return;
+      if (titleEl) titleEl.textContent = 'Edit Date';
+      document.getElementById('d-name').value     = d.name || '';
+      document.getElementById('d-date').value     = d.date || '';
+      document.getElementById('d-category').value = d.category || 'birthday';
+      document.getElementById('d-note').value     = d.note || '';
+    } else {
+      if (titleEl) titleEl.textContent = 'Add Important Date';
+      document.getElementById('d-name').value     = '';
+      document.getElementById('d-date').value     = '';
+      document.getElementById('d-category').value = 'birthday';
+      document.getElementById('d-note').value     = '';
+    }
+
+    openModal('date-modal');
+  }
+
+  function saveDate() {
+    const name     = (document.getElementById('d-name')?.value || '').trim();
+    const date     = document.getElementById('d-date')?.value || '';
+    const category = document.getElementById('d-category')?.value || 'birthday';
+    const note     = (document.getElementById('d-note')?.value || '').trim();
+
+    if (!name) { showToast('Please enter an event name.', 'error'); return; }
+    if (!date) { showToast('Please select a date.', 'error'); return; }
+
+    const event = currentDateId
+      ? { ...ImportantDates.getById(currentDateId) }
+      : { id: uid(), createdAt: new Date().toISOString() };
+
+    event.name     = name;
+    event.date     = date;
+    event.category = category;
+    event.note     = note;
+
+    ImportantDates.save(event);
+    closeModal('date-modal');
+    renderDatesGrid();
+    showToast(currentDateId ? 'Date updated!' : 'Date added!', 'success');
+    currentDateId = null;
+  }
+
+  function confirmDeleteDate(id) {
+    const d = ImportantDates.getById(id);
+    if (!d) return;
+    const nameEl = document.getElementById('confirm-delete-name');
+    if (nameEl) nameEl.textContent = d.name;
+    const confirmBtn = document.getElementById('confirm-delete-btn');
+    if (confirmBtn) {
+      confirmBtn.onclick = () => {
+        ImportantDates.delete(id);
+        closeModal('confirm-delete-modal');
+        renderDatesGrid();
+        showToast('Date deleted.', 'info');
+      };
+    }
+    openModal('confirm-delete-modal');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    renderDatesGrid();
+
+    document.getElementById('new-date-btn')?.addEventListener('click', () => openDateModal());
+    document.getElementById('save-date-btn')?.addEventListener('click', saveDate);
+    setupModalClose('date-modal');
+    setupModalClose('confirm-delete-modal');
+
+    document.querySelectorAll('.filter-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        dateFilter = chip.dataset.filter || 'all';
+        renderDatesGrid();
+      });
+    });
+  });
+</script>
+</body>
+</html>

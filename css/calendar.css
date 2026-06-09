@@ -1,0 +1,622 @@
+/* ============================================================
+   Digital Diary — Calendar, Reminders, Vault, Dates, Settings
+   Mobile-First Responsive v2.0
+   ============================================================ */
+
+/* ════════════════════════════════════════════════════════════
+   CALENDAR MODULE
+   ════════════════════════════════════════════════════════════ */
+
+/* Mobile: stacked layout */
+.calendar-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* ── Month Navigation ───────────────────────────────────────── */
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+  gap: var(--space-3);
+}
+
+.calendar-month-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 3vw, 1.4rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.calendar-nav-btn {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-card);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.calendar-nav-btn:hover { background: var(--bg-secondary); color: var(--text-primary); border-color: var(--border-strong); transform: scale(1.05); }
+
+/* ── Calendar Grid ──────────────────────────────────────────── */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: clamp(2px, 0.5vw, 4px);
+}
+
+.calendar-day-header {
+  text-align: center;
+  font-size: clamp(0.58rem, 1.5vw, 0.72rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  padding: var(--space-2) 0;
+}
+
+.calendar-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+  background: var(--bg-card);
+  border: 1px solid transparent;
+  font-size: clamp(0.72rem, 1.8vw, 0.875rem);
+  min-height: clamp(36px, 8vw, 56px);
+  padding: 2px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.calendar-cell:hover { background: var(--bg-secondary); border-color: var(--border-medium); transform: scale(1.02); }
+.calendar-cell.today { background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: white; font-weight: 700; box-shadow: var(--shadow-sm); }
+.calendar-cell.today:hover { transform: scale(1.04); box-shadow: var(--shadow-md); }
+.calendar-cell.other-month { opacity: 0.35; }
+.calendar-cell.has-entry    { border-color: var(--sage-light);  background: rgba(138,173,143,0.10); }
+.calendar-cell.has-important{ border-color: var(--gold-light);  background: rgba(201,168,76,0.10); }
+.calendar-cell.has-entry.has-important { background: linear-gradient(135deg, rgba(138,173,143,0.10), rgba(201,168,76,0.10)); }
+.calendar-cell.selected { border-color: var(--rose); box-shadow: 0 0 0 2px rgba(201,145,124,0.25); }
+
+.cal-date { font-size: clamp(0.72rem, 1.8vw, 0.875rem); font-weight: 500; line-height: 1; margin-bottom: 2px; }
+
+.cal-dots { display: flex; gap: 2px; justify-content: center; }
+.cal-dot  { width: 4px; height: 4px; border-radius: 50%; }
+.cal-dot-entry     { background: var(--sage); }
+.cal-dot-important { background: var(--gold); }
+.cal-dot-reminder  { background: var(--rose); }
+
+/* ── Calendar Legend ────────────────────────────────────────── */
+.calendar-legend {
+  display: flex;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: clamp(0.68rem, 1.5vw, 0.78rem);
+  color: var(--text-muted);
+}
+
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Day Panel ──────────────────────────────────────────────── */
+.day-panel { }
+
+.day-panel-date { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-4); }
+.day-panel-section { margin-bottom: var(--space-5); }
+.day-panel-label { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.10em; color: var(--text-light); margin-bottom: var(--space-3); }
+
+.day-entry-item {
+  padding: var(--space-3);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  margin-bottom: var(--space-2);
+  min-height: 48px;
+}
+.day-entry-item:hover { background: var(--border-light); }
+.day-entry-item-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+.day-entry-item-time  { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ════════════════════════════════════════════════════════════
+   REMINDERS MODULE
+   ════════════════════════════════════════════════════════════ */
+
+/* Mobile: stacked */
+.reminders-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.reminder-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  cursor: pointer;
+  animation: fadeIn 0.3s ease forwards;
+  margin-bottom: var(--space-3);
+  -webkit-tap-highlight-color: transparent;
+}
+.reminder-item:hover { box-shadow: var(--shadow-sm); transform: translateX(4px); }
+.reminder-item.completed { opacity: 0.55; }
+.reminder-item.completed .reminder-title { text-decoration: line-through; color: var(--text-muted); }
+
+.reminder-check {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  background: transparent;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+  font-size: 0.7rem;
+  -webkit-tap-highlight-color: transparent;
+}
+.reminder-check:hover { border-color: var(--sage); background: rgba(138,173,143,0.15); }
+.reminder-item.completed .reminder-check { background: var(--sage); border-color: var(--sage); color: white; }
+
+.reminder-body { flex: 1; min-width: 0; }
+
+.reminder-title { font-size: clamp(0.85rem, 2vw, 0.9rem); font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+
+.reminder-meta { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+.reminder-time { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.reminder-time.overdue { color: #b04030; font-weight: 600; }
+
+.reminder-note { font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.reminder-actions {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-1);
+  opacity: 1; /* Always visible for touch */
+  transition: opacity var(--transition-fast);
+  flex-shrink: 0;
+}
+
+/* ── Upcoming Reminders Sidebar ─────────────────────────────── */
+.upcoming-reminder-item {
+  padding: var(--space-3);
+  background: var(--bg-secondary);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-2);
+  border-left: 3px solid var(--rose);
+  transition: all var(--transition-fast);
+}
+.upcoming-reminder-item:hover { background: var(--border-light); transform: translateX(2px); }
+.upcoming-reminder-item.priority-high   { border-left-color: #b04030; }
+.upcoming-reminder-item.priority-medium { border-left-color: var(--gold); }
+.upcoming-reminder-item.priority-low    { border-left-color: var(--sage); }
+.upcoming-r-title { font-size: 0.82rem; font-weight: 600; color: var(--text-primary); }
+.upcoming-r-time  { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+
+/* ════════════════════════════════════════════════════════════
+   IMPORTANT DATES MODULE
+   ════════════════════════════════════════════════════════════ */
+
+.dates-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.date-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.date-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+}
+
+.date-card.birthday::before    { background: linear-gradient(90deg, var(--rose), var(--rose-light)); }
+.date-card.anniversary::before { background: linear-gradient(90deg, var(--gold), var(--gold-light)); }
+.date-card.achievement::before { background: linear-gradient(90deg, var(--sage), var(--sage-light)); }
+.date-card.custom::before      { background: linear-gradient(90deg, var(--lavender), var(--lavender-light)); }
+
+.date-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+
+.date-card-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  gap: var(--space-2);
+}
+
+.date-card-icon { font-size: clamp(1.5rem, 4vw, 2rem); }
+.date-card-category { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; }
+
+.date-card-name {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.date-card-date { font-size: 0.8rem; color: var(--text-muted); margin-bottom: var(--space-3); display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap; }
+
+.countdown-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: linear-gradient(135deg, rgba(201,145,124,0.15), rgba(201,168,76,0.12));
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: clamp(0.72rem, 1.5vw, 0.78rem);
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.countdown-badge.today { background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: white; border-color: transparent; }
+.countdown-badge.soon  { border-color: var(--gold-light); color: #8a6010; background: rgba(201,168,76,0.12); }
+
+.date-card-note { font-size: 0.78rem; color: var(--text-muted); margin-top: var(--space-3); line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.date-card-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  opacity: 1; /* Always visible on touch */
+  transition: opacity var(--transition-fast);
+}
+
+/* ════════════════════════════════════════════════════════════
+   PRIVATE VAULT MODULE
+   ════════════════════════════════════════════════════════════ */
+
+.vault-lock-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: var(--space-5);
+  width: 100%;
+}
+
+.vault-lock-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-6);
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  max-width: 380px;
+  width: 100%;
+  animation: scaleIn var(--transition-spring) forwards;
+}
+
+.vault-icon  { font-size: clamp(2.5rem, 6vw, 3.5rem); margin-bottom: var(--space-5); animation: floatIcon 3s ease-in-out infinite; }
+.vault-title { font-family: var(--font-display); font-size: clamp(1.2rem, 3vw, 1.5rem); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-2); }
+.vault-desc  { font-size: clamp(0.82rem, 2vw, 0.875rem); color: var(--text-muted); line-height: 1.7; margin-bottom: var(--space-6); }
+
+.pin-input-group {
+  display: flex;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-bottom: var(--space-6);
+}
+
+.pin-digit {
+  width: clamp(44px, 12vw, 56px);
+  height: clamp(52px, 14vw, 60px);
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  text-align: center;
+  font-size: clamp(1.2rem, 3vw, 1.4rem);
+  font-weight: 700;
+  color: var(--text-primary);
+  outline: none;
+  transition: all var(--transition-fast);
+  -webkit-text-security: disc;
+  caret-color: transparent;
+}
+.pin-digit:focus { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(201,145,124,0.15); transform: scale(1.05); }
+
+.pin-error {
+  font-size: 0.82rem;
+  color: #b04030;
+  margin-top: calc(-1 * var(--space-4));
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+}
+.pin-error.hidden { display: none; }
+
+.vault-status { display: flex; align-items: center; gap: var(--space-2); font-size: 0.82rem; font-weight: 600; color: var(--sage-dark); flex-wrap: wrap; }
+.vault-status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); animation: pulse 2s infinite; }
+
+/* ── Vault Notes Grid ───────────────────────────────────────── */
+.vault-notes-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.vault-note-card {
+  background: linear-gradient(135deg, rgba(168,155,181,0.12), rgba(201,145,124,0.08));
+  border: 1px solid var(--lavender-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  animation: fadeIn 0.3s ease forwards;
+}
+.vault-note-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+
+.vault-note-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-3); }
+.vault-note-preview { font-size: 0.82rem; color: var(--text-muted); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; margin-bottom: var(--space-4); }
+.vault-note-date { font-size: 0.7rem; color: var(--text-light); }
+
+/* ════════════════════════════════════════════════════════════
+   MOOD TRACKER MODULE
+   ════════════════════════════════════════════════════════════ */
+
+.mood-tracker-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+.mood-log-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  transition: all var(--transition-fast);
+  animation: fadeIn 0.3s ease forwards;
+  margin-bottom: var(--space-2);
+}
+.mood-log-card:hover { box-shadow: var(--shadow-sm); transform: translateX(3px); }
+
+.mood-log-emoji { font-size: clamp(1.3rem, 3vw, 1.5rem); flex-shrink: 0; }
+.mood-log-body  { flex: 1; min-width: 0; }
+.mood-log-mood  { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.mood-log-date  { font-size: 0.7rem; color: var(--text-muted); }
+
+/* ════════════════════════════════════════════════════════════
+   SETTINGS MODULE
+   ════════════════════════════════════════════════════════════ */
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+/* Mobile: horizontal scrolling nav tabs */
+.settings-nav {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-1);
+  overflow-x: auto;
+  white-space: nowrap;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.settings-nav::-webkit-scrollbar { display: none; }
+
+.settings-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: clamp(0.78rem, 1.8vw, 0.875rem);
+  font-weight: 500;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+.settings-nav-item:hover  { background: var(--border-light); color: var(--text-primary); }
+.settings-nav-item.active { background: rgba(201,145,124,0.12); color: var(--rose-dark); font-weight: 600; }
+
+.settings-section { animation: fadeIn 0.3s ease forwards; }
+
+.settings-section-title { font-family: var(--font-display); font-size: clamp(1.05rem, 2.5vw, 1.2rem); font-weight: 600; color: var(--text-primary); margin-bottom: var(--space-2); }
+.settings-section-desc  { font-size: 0.82rem; color: var(--text-muted); margin-bottom: var(--space-5); line-height: 1.6; }
+
+.settings-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-light);
+}
+.settings-row:last-child { border-bottom: none; }
+
+.settings-row-label { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+.settings-row-desc  { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+.settings-row-control { flex-shrink: 0; }
+
+/* ── Danger Zone ────────────────────────────────────────────── */
+.danger-zone {
+  background: rgba(196,90,70,0.06);
+  border: 1px solid rgba(196,90,70,0.20);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin-top: var(--space-4);
+}
+
+.danger-zone-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #b04030; margin-bottom: var(--space-4); }
+
+/* ════════════════════════════════════════════════════════════
+   SEARCH MODULE
+   ════════════════════════════════════════════════════════════ */
+
+.search-page { width: 100%; }
+
+.search-big {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  background: var(--bg-card);
+  border: 2px solid var(--border-medium);
+  border-radius: var(--radius-xl);
+  padding: var(--space-3) var(--space-5);
+  margin-bottom: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-fast);
+  min-height: 54px;
+}
+.search-big:focus-within { border-color: var(--rose); box-shadow: 0 0 0 4px rgba(201,145,124,0.12); }
+
+.search-big input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  min-width: 0;
+}
+.search-big input::placeholder { color: var(--text-light); }
+.search-big-icon { color: var(--text-muted); font-size: 1.1rem; flex-shrink: 0; }
+
+.search-result-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-3);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  animation: fadeIn 0.2s ease forwards;
+  -webkit-tap-highlight-color: transparent;
+}
+.search-result-item:hover { box-shadow: var(--shadow-sm); transform: translateX(4px); }
+.search-result-title   { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+.search-result-preview { font-size: 0.82rem; color: var(--text-muted); line-height: 1.6; }
+.search-highlight      { background: rgba(201,145,124,0.25); border-radius: 2px; padding: 0 2px; }
+
+/* ════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS — All Modules
+   ════════════════════════════════════════════════════════════ */
+
+/* 480px: small adjustments for bigger phones */
+@media (min-width: 480px) {
+  .dates-grid        { grid-template-columns: repeat(2, 1fr); }
+  .vault-notes-grid  { grid-template-columns: repeat(2, 1fr); }
+
+  /* Reminder actions hide unless hovered on pointer devices */
+  @media (hover: hover) {
+    .reminder-actions    { opacity: 0; }
+    .reminder-item:hover .reminder-actions { opacity: 1; }
+    .date-card-actions   { opacity: 0; }
+    .date-card:hover .date-card-actions { opacity: 1; }
+  }
+}
+
+/* 768px: tablets — two-column layouts */
+@media (min-width: 768px) {
+  .calendar-wrapper  { grid-template-columns: 1fr 280px; gap: var(--space-6); }
+  .day-panel         { position: sticky; top: calc(var(--header-height) + var(--space-4)); }
+
+  .reminders-layout  { grid-template-columns: 1fr 240px; gap: var(--space-6); }
+
+  .dates-grid        { grid-template-columns: repeat(2, 1fr); }
+  .vault-notes-grid  { grid-template-columns: repeat(2, 1fr); }
+
+  .settings-nav {
+    flex-direction: column;
+    overflow-x: visible;
+    white-space: normal;
+    width: 200px;
+    flex-shrink: 0;
+  }
+  .settings-nav-item { flex-shrink: 1; }
+  .settings-layout   {
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-6);
+  }
+  .settings-nav { position: sticky; top: calc(var(--header-height) + var(--space-4)); }
+
+  .settings-row { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-4); }
+
+  .mood-tracker-layout { grid-template-columns: 1fr 260px; gap: var(--space-6); }
+
+  .search-page { max-width: 680px; }
+}
+
+/* 1024px: laptops */
+@media (min-width: 1024px) {
+  .calendar-wrapper  { grid-template-columns: 1fr 300px; }
+  .reminders-layout  { grid-template-columns: 1fr 260px; }
+  .dates-grid        { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .vault-notes-grid  { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+
+  .calendar-cell { min-height: 56px; }
+  .vault-lock-card { padding: var(--space-12) var(--space-10); }
+}
+
+/* 1440px: desktops */
+@media (min-width: 1440px) {
+  .calendar-wrapper  { grid-template-columns: 1fr 320px; }
+  .mood-tracker-layout { grid-template-columns: 1fr 300px; }
+  .settings-layout   { grid-template-columns: 220px 1fr; }
+  .settings-nav      { width: 220px; }
+}

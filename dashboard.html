@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Dashboard — Your daily overview of entries, mood, reminders, and upcoming events." />
+  <title>Dashboard — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/dashboard.css" />
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon" aria-hidden="true">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item active" id="nav-dashboard">
+        <span class="nav-icon" aria-hidden="true">🏠</span>
+        <span class="nav-label">Dashboard</span>
+      </a>
+      <a href="diary.html" class="nav-item" id="nav-diary">
+        <span class="nav-icon" aria-hidden="true">📝</span>
+        <span class="nav-label">My Diary</span>
+      </a>
+      <a href="calendar.html" class="nav-item" id="nav-calendar">
+        <span class="nav-icon" aria-hidden="true">📅</span>
+        <span class="nav-label">Calendar</span>
+      </a>
+
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item" id="nav-reminders">
+        <span class="nav-icon" aria-hidden="true">⏰</span>
+        <span class="nav-label">Reminders</span>
+        <span class="nav-badge hidden" id="reminders-badge">0</span>
+      </a>
+      <a href="important-dates.html" class="nav-item" id="nav-dates">
+        <span class="nav-icon" aria-hidden="true">🎂</span>
+        <span class="nav-label">Important Dates</span>
+      </a>
+      <a href="vault.html" class="nav-item" id="nav-vault">
+        <span class="nav-icon" aria-hidden="true">🔐</span>
+        <span class="nav-label">Private Vault</span>
+      </a>
+
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item" id="nav-mood">
+        <span class="nav-icon" aria-hidden="true">😊</span>
+        <span class="nav-label">Mood Tracker</span>
+      </a>
+      <a href="search.html" class="nav-item" id="nav-search">
+        <span class="nav-icon" aria-hidden="true">🔍</span>
+        <span class="nav-label">Search</span>
+      </a>
+
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item" id="nav-settings">
+        <span class="nav-icon" aria-hidden="true">⚙️</span>
+        <span class="nav-label">Settings</span>
+      </a>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="sidebar-overlay"></div>
+
+  <!-- Main Content -->
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <button class="hamburger-btn" aria-label="Open navigation menu" title="Open menu">☰</button>
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home</div>
+        <h1 class="page-title">Dashboard</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+        <button class="btn btn-primary" onclick="window.location.href='diary.html'">✏️ New Entry</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <!-- Welcome Banner -->
+      <div class="welcome-banner animate-fade-in-up" id="welcome-banner">
+        <div class="welcome-text">
+          <div class="welcome-greeting" id="time-greeting">Good morning</div>
+          <div class="welcome-name" id="welcome-name">Botuuu</div>
+          <div class="welcome-date" id="today-date">
+            <span>📅</span><span id="date-display"></span>
+          </div>
+        </div>
+        <div class="welcome-actions">
+          <button class="btn btn-primary" onclick="window.location.href='diary.html'">✏️ Write Today</button>
+          <button class="btn btn-secondary" onclick="window.location.href='mood-tracker.html'">😊 Log Mood</button>
+        </div>
+      </div>
+
+      <!-- Quote Card -->
+      <div class="quote-card" id="quote-card">
+        <button class="quote-refresh" id="quote-refresh-btn" title="New quote" aria-label="Get a new quote">↻</button>
+        <div class="quote-text" id="quote-text">Loading inspiration…</div>
+        <div class="quote-author" id="quote-author"></div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="stats-grid stagger-children">
+        <div class="stat-card animate-fade-in">
+          <div class="stat-icon stat-icon-rose" aria-hidden="true">📝</div>
+          <div class="stat-body">
+            <div class="stat-number" id="stat-entries">0</div>
+            <div class="stat-label">Diary Entries</div>
+          </div>
+        </div>
+        <div class="stat-card animate-fade-in">
+          <div class="stat-icon stat-icon-sage" aria-hidden="true">⏰</div>
+          <div class="stat-body">
+            <div class="stat-number" id="stat-reminders">0</div>
+            <div class="stat-label">Reminders</div>
+          </div>
+        </div>
+        <div class="stat-card animate-fade-in">
+          <div class="stat-icon stat-icon-gold" aria-hidden="true">🎂</div>
+          <div class="stat-body">
+            <div class="stat-number" id="stat-dates">0</div>
+            <div class="stat-label">Important Dates</div>
+          </div>
+        </div>
+        <div class="stat-card animate-fade-in">
+          <div class="stat-icon stat-icon-lavender" aria-hidden="true">😊</div>
+          <div class="stat-body">
+            <div class="stat-number" id="stat-moods">0</div>
+            <div class="stat-label">Mood Logs</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dashboard Grid -->
+      <div class="dashboard-grid">
+        <!-- Left: Recent Entries & Mood Overview -->
+        <div class="dashboard-main">
+
+          <!-- Recent Entries -->
+          <div class="card animate-fade-in">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Recent Entries</div>
+                <div class="card-subtitle">Your latest diary moments</div>
+              </div>
+              <a href="diary.html" class="btn btn-ghost btn-sm">View all →</a>
+            </div>
+            <div id="recent-entries-list">
+              <div class="skeleton" style="height:70px;margin-bottom:12px;border-radius:12px"></div>
+              <div class="skeleton" style="height:70px;margin-bottom:12px;border-radius:12px"></div>
+              <div class="skeleton" style="height:70px;border-radius:12px"></div>
+            </div>
+          </div>
+
+          <!-- Today's Mood -->
+          <div class="card animate-fade-in">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Today's Mood</div>
+                <div class="card-subtitle">How are you feeling today?</div>
+              </div>
+              <span id="today-mood-display" class="mood-badge"></span>
+            </div>
+            <div class="mood-overview-grid" id="mood-quick-select"></div>
+          </div>
+
+          <!-- Mood Summary -->
+          <div class="card animate-fade-in">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Mood Overview</div>
+                <div class="card-subtitle">Your emotional journey this month</div>
+              </div>
+              <a href="mood-tracker.html" class="btn btn-ghost btn-sm">Full report →</a>
+            </div>
+            <div class="mood-bar-container" id="mood-bar-chart"></div>
+          </div>
+
+        </div>
+
+        <!-- Right: Mini Calendar, Upcoming, Reminders -->
+        <div class="dashboard-side">
+
+          <!-- Mini Calendar -->
+          <div class="card">
+            <div class="card-header" style="margin-bottom:var(--space-3)">
+              <div class="card-title">Calendar</div>
+              <a href="calendar.html" class="btn btn-ghost btn-sm">Open →</a>
+            </div>
+            <div id="mini-calendar-container" class="mini-calendar"></div>
+          </div>
+
+          <!-- Upcoming Events -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Upcoming</div>
+                <div class="card-subtitle">Dates & events coming up</div>
+              </div>
+              <a href="important-dates.html" class="btn btn-ghost btn-sm">All →</a>
+            </div>
+            <div id="upcoming-dates-list">
+              <div class="text-muted text-small" style="padding:var(--space-4) 0">Loading events…</div>
+            </div>
+          </div>
+
+          <!-- Pending Reminders -->
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Reminders</div>
+                <div class="card-subtitle">Coming up soon</div>
+              </div>
+              <a href="reminders.html" class="btn btn-ghost btn-sm">All →</a>
+            </div>
+            <div id="dashboard-reminders-list">
+              <div class="text-muted text-small" style="padding:var(--space-4) 0">Loading reminders…</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /page-body -->
+  </main>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="js/app.js"></script>
+<script src="js/calendar.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // ── Greeting ────────────────────────────────────────────
+  const hour = new Date().getHours();
+  const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening';
+  const greetingEl = document.getElementById('time-greeting');
+  if (greetingEl) greetingEl.textContent = greeting;
+
+  const settings = Settings.get();
+  const profile  = Profile.get();
+  const userName = settings.username || profile.name || 'Dear Diary';
+  const nameEl   = document.getElementById('welcome-name');
+  if (nameEl) nameEl.textContent = `${greeting.split(' ')[1]}, ${userName} 🌸`;
+
+  const dateEl = document.getElementById('date-display');
+  if (dateEl) {
+    dateEl.textContent = new Date().toLocaleDateString('en-US', {
+      weekday: 'long', month: 'long', day: 'numeric', year: 'numeric'
+    });
+  }
+
+  // ── Quote ────────────────────────────────────────────────
+  let quoteIndex = Math.floor(Math.random() * QUOTES.length);
+  function showQuote(idx) {
+    const q = QUOTES[idx];
+    const textEl   = document.getElementById('quote-text');
+    const authorEl = document.getElementById('quote-author');
+    if (textEl)   { textEl.style.opacity = '0'; setTimeout(() => { textEl.textContent = q.text; textEl.style.opacity = '1'; textEl.style.transition = 'opacity 0.4s ease'; }, 200); }
+    if (authorEl) setTimeout(() => authorEl.textContent = '— ' + q.author, 200);
+  }
+  showQuote(quoteIndex);
+  document.getElementById('quote-refresh-btn')?.addEventListener('click', () => {
+    quoteIndex = (quoteIndex + 1) % QUOTES.length;
+    showQuote(quoteIndex);
+  });
+
+  // ── Stats ────────────────────────────────────────────────
+  function updateStats() {
+    const stats = {
+      'stat-entries':   Entries.getAll().length,
+      'stat-reminders': Reminders.getAll().filter(r => !r.completed).length,
+      'stat-dates':     ImportantDates.getAll().length,
+      'stat-moods':     MoodLogs.getAll().length,
+    };
+    Object.entries(stats).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) animateCounter(el, val);
+    });
+  }
+  updateStats();
+
+  // ── Recent Entries ───────────────────────────────────────
+  function renderRecentEntries() {
+    const container = document.getElementById('recent-entries-list');
+    if (!container) return;
+
+    const entries = Entries.getAll().slice(0, 5);
+    if (entries.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state" style="padding:var(--space-8)">
+          <div class="empty-state-icon" style="font-size:2.5rem">✍️</div>
+          <div class="empty-state-title" style="font-size:1rem">No entries yet</div>
+          <div class="empty-state-desc" style="font-size:0.82rem">Your diary awaits your first story.</div>
+          <a href="diary.html" class="btn btn-primary btn-sm">Write First Entry</a>
+        </div>`;
+      return;
+    }
+
+    container.innerHTML = entries.map(e => {
+      const d = new Date((e.date || e.createdAt || '') + (e.date?.length === 10 ? 'T00:00:00' : ''));
+      const mood = e.mood ? getMoodMeta(e.mood) : null;
+      return `
+        <div class="recent-entry-item" onclick="window.location.href='diary.html'">
+          <div class="entry-date-pill">
+            <div class="entry-date-day">${d.getDate()}</div>
+            <div class="entry-date-mon">${d.toLocaleDateString('en-US',{month:'short'})}</div>
+          </div>
+          <div class="entry-body">
+            <div class="entry-title-text">${escape(e.title)}</div>
+            <div class="entry-preview">${escape(truncate(e.content || '', 90))}</div>
+            <div class="entry-meta">
+              ${mood ? `<span class="mood-badge mood-${e.mood}" style="font-size:.72rem;padding:2px 8px">${mood.emoji}</span>` : ''}
+              ${(e.tags||[]).slice(0,2).map(t=>`<span class="tag tag-rose" style="font-size:.7rem">${escape(t)}</span>`).join('')}
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+  renderRecentEntries();
+
+  // ── Mood Quick Select ───────────────────────────────────
+  function renderMoodQuickSelect() {
+    const container = document.getElementById('mood-quick-select');
+    if (!container) return;
+
+    const todayMood = MoodLogs.getTodayMood();
+    const todayDisplay = document.getElementById('today-mood-display');
+    if (todayDisplay && todayMood) {
+      const m = getMoodMeta(todayMood);
+      todayDisplay.className = `mood-badge mood-${todayMood}`;
+      todayDisplay.textContent = `${m.emoji} ${m.label}`;
+    }
+
+    container.innerHTML = MOODS.map(m => `
+      <div class="mood-item ${todayMood === m.key ? 'selected' : ''}"
+           onclick="logDashboardMood('${m.key}')" role="button" tabindex="0"
+           aria-label="Log mood: ${m.label}">
+        <span class="mood-emoji">${m.emoji}</span>
+        <span class="mood-name">${m.label}</span>
+      </div>`).join('');
+  }
+  renderMoodQuickSelect();
+
+  window.logDashboardMood = (moodKey) => {
+    MoodLogs.log(moodKey);
+    renderMoodQuickSelect();
+    renderMoodBars();
+    showToast(`Mood logged: ${getMoodMeta(moodKey).label} ${getMoodMeta(moodKey).emoji}`, 'success');
+    updateStats();
+  };
+
+  // ── Mood Bar Chart ───────────────────────────────────────
+  function renderMoodBars() {
+    const container = document.getElementById('mood-bar-chart');
+    if (!container) return;
+
+    const summary = MoodLogs.getSummary();
+    const max = Math.max(...Object.values(summary), 1);
+    const colors = {
+      happy: '#c9a84c', excited: '#c47a5a', calm: '#8aad8f',
+      productive: '#a89bb5', tired: '#7d5a3c', sad: '#6b8ab5'
+    };
+
+    container.innerHTML = MOODS.map(m => `
+      <div class="mood-bar-row">
+        <span class="mood-bar-label">${m.emoji} ${m.label}</span>
+        <div class="mood-bar-track">
+          <div class="mood-bar-fill"
+               style="width:${(summary[m.key]/max)*100}%;background:${colors[m.key]}"></div>
+        </div>
+        <span class="mood-bar-count">${summary[m.key]}</span>
+      </div>`).join('');
+  }
+  renderMoodBars();
+
+  // ── Mini Calendar ────────────────────────────────────────
+  renderMiniCalendar('mini-calendar-container', new Date().getFullYear(), new Date().getMonth());
+
+  // ── Upcoming Dates ───────────────────────────────────────
+  function renderUpcomingDates() {
+    const container = document.getElementById('upcoming-dates-list');
+    if (!container) return;
+
+    const upcoming = ImportantDates.getUpcoming(4);
+    if (upcoming.length === 0) {
+      container.innerHTML = `<div class="text-muted text-small" style="padding:var(--space-3)">No upcoming events</div>`;
+      return;
+    }
+
+    const catColors = { birthday:'var(--rose)', anniversary:'var(--gold)', achievement:'var(--sage)', custom:'var(--lavender)' };
+
+    container.innerHTML = upcoming.map(d => {
+      const cat = getCategoryMeta(d.category);
+      return `
+        <div class="upcoming-item">
+          <div class="upcoming-dot" style="background:${catColors[d.category]||'var(--rose)'}"></div>
+          <div class="upcoming-body">
+            <div class="upcoming-name">${cat.icon} ${escape(d.name)}</div>
+            <div class="upcoming-sub">${cat.label}</div>
+          </div>
+          <div class="upcoming-days">${d._days === 0 ? 'Today! 🎉' : `${d._days}d`}</div>
+        </div>`;
+    }).join('');
+  }
+  renderUpcomingDates();
+
+  // ── Dashboard Reminders ──────────────────────────────────
+  function renderDashboardReminders() {
+    const container = document.getElementById('dashboard-reminders-list');
+    if (!container) return;
+
+    const upcoming = Reminders.getUpcoming();
+    if (upcoming.length === 0) {
+      container.innerHTML = `<div class="text-muted text-small" style="padding:var(--space-3)">No upcoming reminders</div>`;
+      return;
+    }
+
+    container.innerHTML = upcoming.slice(0,4).map(r => `
+      <div class="upcoming-reminder-item priority-${r.priority||'medium'}">
+        <div class="upcoming-r-title">${escape(r.title)}</div>
+        <div class="upcoming-r-time">⏰ ${r.datetime ? formatDateTime(r.datetime) : 'No time set'}</div>
+      </div>`).join('');
+  }
+  renderDashboardReminders();
+});
+</script>
+</body>
+</html>

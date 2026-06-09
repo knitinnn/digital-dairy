@@ -1,0 +1,408 @@
+/* ============================================================
+   Digital Diary — Diary Module Styles | Mobile-First v2.0
+   ============================================================ */
+
+/* ── Diary Controls Bar ─────────────────────────────────────── */
+.diary-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  padding: var(--space-2) var(--space-3);
+  min-height: 36px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+  font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.filter-chip:hover  { border-color: var(--rose-light); color: var(--rose-dark); }
+.filter-chip.active { background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: white; border-color: transparent; box-shadow: 0 2px 8px rgba(201,145,124,0.30); }
+
+/* View toggles */
+.view-toggle-group {
+  display: flex;
+  gap: var(--space-2);
+  margin-left: auto;
+}
+
+/* ── Diary Grid — mobile-first single column ───────────────── */
+.diary-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+
+.diary-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ── Diary Entry Card ───────────────────────────────────────── */
+.diary-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.3s ease forwards;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.diary-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--rose), var(--lavender));
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.diary-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.diary-card:hover::before { opacity: 1; }
+
+.diary-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.diary-card-date {
+  font-size: clamp(0.68rem, 1.5vw, 0.75rem);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.diary-card-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.diary-card-preview {
+  font-size: clamp(0.78rem, 2vw, 0.85rem);
+  color: var(--text-muted);
+  line-height: 1.7;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+  font-family: var(--font-prose);
+}
+
+.diary-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.diary-card-tags { display: flex; gap: var(--space-2); flex-wrap: wrap; }
+
+.diary-card-actions {
+  display: flex;
+  gap: var(--space-2);
+  opacity: 1; /* Always visible on touch devices */
+  transition: opacity var(--transition-fast);
+}
+
+.card-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-medium);
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.card-action-btn:hover { background: var(--bg-card); color: var(--text-primary); }
+.card-action-btn.danger:hover { background: rgba(196,90,70,0.12); color: #b04030; border-color: rgba(196,90,70,0.3); }
+
+/* ── Entry Editor Modal Layout ──────────────────────────────── */
+.editor-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+}
+
+/* ── Toolbar ────────────────────────────────────────────────── */
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  border-bottom: none;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.toolbar-btn {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: var(--radius-xs);
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.toolbar-btn:hover { background: var(--border-light); color: var(--text-primary); }
+.toolbar-separator { width: 1px; height: 18px; background: var(--border-medium); margin: 0 var(--space-1); flex-shrink: 0; }
+
+.autosave-indicator {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.72rem;
+  color: var(--sage);
+  opacity: 0;
+  margin-left: auto;
+  transition: opacity var(--transition-base);
+  white-space: nowrap;
+}
+.autosave-indicator.visible { opacity: 1; }
+.autosave-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage); animation: pulse 1.5s infinite; }
+
+/* ── Textarea ───────────────────────────────────────────────── */
+.entry-textarea {
+  width: 100%;
+  min-height: clamp(220px, 45vh, 420px);
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-input);
+  border: 1px solid var(--border-medium);
+  border-radius: 0 0 var(--radius-md) var(--radius-md);
+  font-family: var(--font-prose);
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  line-height: 1.9;
+  color: var(--text-primary);
+  resize: vertical;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.entry-textarea:focus { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(201,145,124,0.10); }
+
+.char-counter {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  font-size: 0.72rem;
+  color: var(--text-light);
+}
+.char-counter.warning { color: var(--gold); }
+.char-counter.over    { color: #b04030; }
+
+/* ── Editor Sidebar (mood & tags) ───────────────────────────── */
+.editor-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* ── Mood Selector ──────────────────────────────────────────── */
+.mood-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: var(--space-3) var(--space-2);
+  min-height: 60px;
+  border-radius: var(--radius-md);
+  border: 2px solid var(--border-light);
+  background: var(--bg-secondary);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.mood-btn:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+.mood-btn.selected { border-color: var(--rose); background: rgba(201,145,124,0.10); }
+
+.mood-btn-emoji { font-size: clamp(1.1rem, 3vw, 1.3rem); }
+.mood-btn-label { font-size: clamp(0.58rem, 1.2vw, 0.65rem); font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* ── Tags ───────────────────────────────────────────────────── */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  background: var(--bg-input);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  min-height: 48px;
+  align-items: center;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  cursor: text;
+}
+.tags-container:focus-within { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(201,145,124,0.10); }
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: rgba(201,145,124,0.18);
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--rose-dark);
+}
+.tag-chip-remove { background: none; border: none; cursor: pointer; color: var(--rose-dark); font-size: 0.8rem; padding: 0; display: flex; align-items: center; opacity: 0.6; transition: opacity var(--transition-fast); }
+.tag-chip-remove:hover { opacity: 1; }
+
+.tags-input { border: none; background: transparent; outline: none; font-size: 0.82rem; color: var(--text-primary); flex: 1; min-width: 80px; min-height: 28px; }
+.tags-input::placeholder { color: var(--text-light); }
+
+/* ── Entry View Modal ───────────────────────────────────────── */
+.entry-view-header {
+  padding: var(--space-5) var(--space-6);
+  border-bottom: 1px solid var(--border-light);
+}
+
+.entry-view-date { font-size: 0.78rem; color: var(--text-muted); margin-bottom: var(--space-2); display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+.entry-view-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: var(--space-3);
+}
+
+.entry-view-meta { display: flex; align-items: center; gap: var(--space-3); flex-wrap: wrap; }
+
+.entry-view-body {
+  padding: var(--space-5) var(--space-6);
+  font-family: var(--font-prose);
+  font-size: clamp(0.875rem, 2vw, 0.95rem);
+  line-height: 1.9;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* ── Save Success ───────────────────────────────────────────── */
+.save-success {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+.save-success.active { opacity: 1; }
+.save-success-inner {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8) var(--space-10);
+  text-align: center;
+  box-shadow: var(--shadow-xl);
+  transform: scale(0.8);
+  transition: transform var(--transition-spring);
+}
+.save-success.active .save-success-inner { transform: scale(1); }
+.save-success-icon { font-size: 3rem; margin-bottom: var(--space-3); animation: floatIcon 1s ease-in-out 1; }
+.save-success-text { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; color: var(--text-primary); }
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+   ══════════════════════════════════════════════════════════════ */
+
+/* 480px: show 2 diary cards side by side */
+@media (min-width: 480px) {
+  .diary-controls { flex-direction: row; align-items: center; }
+  .diary-grid { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  /* Show actions only on hover for pointer devices */
+  @media (hover: hover) {
+    .diary-card-actions { opacity: 0; }
+    .diary-card:hover .diary-card-actions { opacity: 1; }
+  }
+}
+
+/* 768px: editor gets sidebar panel */
+@media (min-width: 768px) {
+  .entry-textarea { min-height: 320px; }
+}
+
+/* 1024px: full two-column editor layout */
+@media (min-width: 1024px) {
+  .editor-layout {
+    grid-template-columns: 1fr 270px;
+    gap: var(--space-6);
+  }
+  .editor-sidebar {
+    position: sticky;
+    top: calc(var(--header-height) + var(--space-4));
+  }
+  .entry-textarea { min-height: 400px; }
+  .diary-grid { gap: var(--space-5); }
+}
+
+/* 1440px: larger cards */
+@media (min-width: 1440px) {
+  .diary-card { padding: var(--space-6); }
+  .diary-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-6); }
+}

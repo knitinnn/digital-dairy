@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary — Your personal space for daily thoughts, memories, and reflections." />
+  <title>Digital Diary — Welcome</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Onboarding / Landing Page Styles ────────────────── */
+    .landing-page {
+      min-height: 100vh;
+      background: var(--bg-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative background blobs */
+    .landing-page::before,
+    .landing-page::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .landing-page::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(201,145,124,0.18), transparent 70%);
+      top: -100px; right: -100px;
+      animation: floatIcon 6s ease-in-out infinite;
+    }
+    .landing-page::after {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(138,173,143,0.15), transparent 70%);
+      bottom: -80px; left: -80px;
+      animation: floatIcon 8s ease-in-out infinite reverse;
+    }
+
+    .landing-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(var(--glass-blur));
+      -webkit-backdrop-filter: blur(var(--glass-blur));
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      padding: var(--space-12) var(--space-10);
+      max-width: 520px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+
+    .landing-logo {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, var(--rose), var(--brown));
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto var(--space-6);
+      box-shadow: var(--shadow-md);
+      animation: floatIcon 4s ease-in-out infinite;
+    }
+
+    .landing-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: var(--space-3);
+      line-height: 1.2;
+    }
+
+    .landing-subtitle {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: var(--space-8);
+      font-family: var(--font-prose);
+    }
+
+    .setup-form { text-align: left; }
+
+    .setup-greeting {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      margin-bottom: var(--space-6);
+      text-align: center;
+    }
+
+    .landing-features {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--space-3);
+      margin-bottom: var(--space-8);
+    }
+
+    .landing-feature {
+      background: var(--bg-secondary);
+      border-radius: var(--radius-md);
+      padding: var(--space-3) var(--space-4);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+      border: 1px solid var(--border-light);
+    }
+
+    .landing-feature-icon { font-size: 1rem; }
+
+    .landing-footer {
+      margin-top: var(--space-6);
+      font-size: 0.75rem;
+      color: var(--text-light);
+    }
+
+    /* User's name on return visits */
+    .returning-user { display: none; }
+    .new-user       { }
+
+    @media (max-width: 560px) {
+      .landing-card { padding: var(--space-8) var(--space-6); }
+      .landing-title { font-size: 1.7rem; }
+      .landing-features { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="landing-page">
+    <div class="landing-card">
+      <div class="landing-logo" aria-hidden="true">📖</div>
+      <h1 class="landing-title">Digital Diary</h1>
+      <p class="landing-subtitle">
+        Your personal sanctuary for daily thoughts, precious memories, and quiet reflections.
+        Everything stays private — right here in your browser.
+      </p>
+
+      <!-- New User Setup -->
+      <div id="new-user-section" class="new-user">
+        <div class="landing-features">
+          <div class="landing-feature"><span class="landing-feature-icon">📝</span> Daily Entries</div>
+          <div class="landing-feature"><span class="landing-feature-icon">📅</span> Calendar View</div>
+          <div class="landing-feature"><span class="landing-feature-icon">⏰</span> Reminders</div>
+          <div class="landing-feature"><span class="landing-feature-icon">🔐</span> Private Vault</div>
+          <div class="landing-feature"><span class="landing-feature-icon">😊</span> Mood Tracker</div>
+          <div class="landing-feature"><span class="landing-feature-icon">🎂</span> Important Dates</div>
+        </div>
+
+        <div class="setup-form">
+          <div class="setup-greeting">Let's get started — what shall we call you?</div>
+          <div class="form-group">
+            <label class="form-label" for="setup-name">Your Name</label>
+            <input type="text" id="setup-name" class="form-input"
+                   placeholder="e.g. Aria, James, Priya…"
+                   maxlength="40" autocomplete="off" />
+          </div>
+          <button id="start-btn" class="btn btn-primary btn-lg w-full btn-round">
+            Begin My Diary Journey ✨
+          </button>
+        </div>
+      </div>
+
+      <!-- Returning User -->
+      <div id="returning-user-section" class="returning-user">
+        <p class="setup-greeting" id="returning-greeting">Welcome back!</p>
+        <button id="continue-btn" class="btn btn-primary btn-lg w-full btn-round">
+          Open My Diary 📖
+        </button>
+        <button id="new-user-btn" class="btn btn-ghost w-full" style="margin-top:var(--space-3)">
+          Start Fresh
+        </button>
+      </div>
+
+      <div class="landing-footer">
+        🔒 All data stored locally in your browser · No servers · No tracking
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container"></div>
+
+  <script src="js/app.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Determine if user has profile
+      const profile  = Profile.get();
+      const settings = Settings.get();
+      const name     = settings.username || profile.name;
+      const hasData  = !!localStorage.getItem(APP_KEYS.PROFILE) || Entries.getAll().length > 0;
+
+      const newSection       = document.getElementById('new-user-section');
+      const returningSection = document.getElementById('returning-user-section');
+      const greetingEl       = document.getElementById('returning-greeting');
+
+      // Check for existing user data
+      const existingName = settings.username || Storage.get(APP_KEYS.PROFILE)?.name;
+
+      if (existingName && existingName !== 'Dear Diary') {
+        // Returning user
+        newSection.style.display       = 'none';
+        returningSection.style.display = 'block';
+        if (greetingEl) greetingEl.textContent = `Welcome back, ${existingName}! 🌸`;
+      }
+
+      // New user start
+      document.getElementById('start-btn')?.addEventListener('click', () => {
+        const name = document.getElementById('setup-name')?.value?.trim();
+        if (!name) {
+          showToast('Please enter your name!', 'error');
+          document.getElementById('setup-name')?.focus();
+          return;
+        }
+        Profile.set({ name, joinedAt: new Date().toISOString() });
+        Settings.update('username', name);
+        window.location.href = 'dashboard.html';
+      });
+
+      document.getElementById('setup-name')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('start-btn')?.click();
+      });
+
+      // Returning user continue
+      document.getElementById('continue-btn')?.addEventListener('click', () => {
+        window.location.href = 'dashboard.html';
+      });
+
+      // Start fresh
+      document.getElementById('new-user-btn')?.addEventListener('click', () => {
+        newSection.style.display       = 'block';
+        returningSection.style.display = 'none';
+      });
+
+      // Theme
+      initTheme();
+    });
+  </script>
+</body>
+</html>

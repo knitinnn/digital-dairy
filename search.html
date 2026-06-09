@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Search — Find diary entries by title, content, tags, or date." />
+  <title>Search — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+</head>
+<body>
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item active"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / Search</div>
+        <h1 class="page-title">Search</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <div class="page-body search-page" style="max-width:720px">
+
+      <!-- Search Input -->
+      <div class="search-big" style="margin-bottom:var(--space-5)">
+        <span class="search-big-icon">🔍</span>
+        <input type="text" id="main-search" placeholder="Search diary entries, tags, dates…"
+               autofocus autocomplete="off" aria-label="Search diary entries" />
+        <button id="clear-search" class="btn btn-ghost btn-icon" title="Clear search" style="opacity:0;pointer-events:none">✕</button>
+      </div>
+
+      <!-- Filter Row -->
+      <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);flex-wrap:wrap">
+        <span style="font-size:.8rem;color:var(--text-muted);font-weight:600">Search in:</span>
+        <label style="display:flex;align-items:center;gap:6px;font-size:.82rem;cursor:pointer">
+          <input type="checkbox" id="filter-title"   checked /> Titles
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:.82rem;cursor:pointer">
+          <input type="checkbox" id="filter-content" checked /> Content
+        </label>
+        <label style="display:flex;align-items:center;gap:6px;font-size:.82rem;cursor:pointer">
+          <input type="checkbox" id="filter-tags"    checked /> Tags
+        </label>
+        <div style="margin-left:auto">
+          <input type="date" id="filter-date" class="form-input" style="width:180px;padding:6px 12px" title="Filter by date" aria-label="Filter by date" />
+        </div>
+      </div>
+
+      <!-- Results Count -->
+      <div id="search-results-info" style="font-size:.82rem;color:var(--text-muted);margin-bottom:var(--space-4)"></div>
+
+      <!-- Results List -->
+      <div id="search-results"></div>
+
+      <!-- Default: Show recent entries -->
+      <div id="search-default">
+        <div style="font-size:.82rem;font-weight:600;color:var(--text-muted);margin-bottom:var(--space-4);text-transform:uppercase;letter-spacing:.08em">Recent Entries</div>
+        <div id="recent-search-list"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ── Entry View Modal ─────────────────────────────────────── -->
+<div id="view-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:680px">
+    <div class="modal-header">
+      <h2 class="modal-title">Diary Entry</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="entry-view-header" id="entry-view-header-content"></div>
+    <div class="entry-view-body" id="entry-view-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="window.location.href='diary.html'">Open in Diary</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const searchInput   = document.getElementById('main-search');
+  const clearBtn      = document.getElementById('clear-search');
+  const resultsEl     = document.getElementById('search-results');
+  const infoEl        = document.getElementById('search-results-info');
+  const defaultEl     = document.getElementById('search-default');
+  const recentEl      = document.getElementById('recent-search-list');
+  const filterDate    = document.getElementById('filter-date');
+
+  // Render recent entries by default
+  function renderRecent() {
+    const entries = Entries.getAll().slice(0, 8);
+    if (entries.length === 0) {
+      recentEl.innerHTML = `
+        <div class="empty-state" style="padding:var(--space-8)">
+          <div class="empty-state-icon" style="font-size:2.5rem">📝</div>
+          <div class="empty-state-title">No entries yet</div>
+          <div class="empty-state-desc">Start writing your diary to see entries here.</div>
+          <a href="diary.html" class="btn btn-primary btn-sm">Write First Entry</a>
+        </div>`;
+      return;
+    }
+
+    recentEl.innerHTML = entries.map(e => renderResult(e, '')).join('');
+  }
+
+  function renderResult(e, query) {
+    const mood = e.mood ? getMoodMeta(e.mood) : null;
+    return `
+      <div class="search-result-item" onclick="viewSearchEntry('${e.id}')">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <div class="search-result-title">${query ? highlight(e.title, query) : escape(e.title)}</div>
+          ${mood ? `<span class="mood-badge mood-${e.mood}" style="font-size:.7rem">${mood.emoji}</span>` : ''}
+        </div>
+        <div class="search-result-preview">
+          ${query ? highlight(truncate(e.content||'',120), query) : escape(truncate(e.content||'',120))}
+        </div>
+        <div style="display:flex;align-items:center;gap:var(--space-3);margin-top:var(--space-2)">
+          <span style="font-size:.72rem;color:var(--text-muted)">📅 ${formatDate(e.date||e.createdAt,{month:'short',day:'numeric',year:'numeric'})}</span>
+          ${(e.tags||[]).map(t=>`<span class="tag tag-rose" style="font-size:.68rem">${escape(t)}</span>`).join('')}
+        </div>
+      </div>`;
+  }
+
+  function performSearch() {
+    const q    = (searchInput.value || '').trim();
+    const date = filterDate.value || '';
+    const inTitle   = document.getElementById('filter-title')?.checked;
+    const inContent = document.getElementById('filter-content')?.checked;
+    const inTags    = document.getElementById('filter-tags')?.checked;
+
+    // Show/hide clear button
+    clearBtn.style.opacity = q ? '1' : '0';
+    clearBtn.style.pointerEvents = q ? 'auto' : 'none';
+
+    if (!q && !date) {
+      defaultEl.style.display = '';
+      resultsEl.innerHTML     = '';
+      infoEl.textContent      = '';
+      return;
+    }
+
+    defaultEl.style.display = 'none';
+
+    let results = Entries.getAll();
+
+    // Date filter
+    if (date) {
+      results = results.filter(e => (e.date || e.createdAt || '').startsWith(date));
+    }
+
+    // Text search
+    if (q) {
+      const lower = q.toLowerCase();
+      results = results.filter(e => {
+        if (inTitle   && e.title.toLowerCase().includes(lower))   return true;
+        if (inContent && (e.content||'').toLowerCase().includes(lower)) return true;
+        if (inTags    && (e.tags||[]).some(t => t.toLowerCase().includes(lower))) return true;
+        return false;
+      });
+    }
+
+    infoEl.textContent = `${results.length} result${results.length!==1?'s':''} found`;
+
+    if (results.length === 0) {
+      resultsEl.innerHTML = `
+        <div class="empty-state" style="padding:var(--space-8)">
+          <div class="empty-state-icon" style="font-size:2.5rem">🔍</div>
+          <div class="empty-state-title">No results found</div>
+          <div class="empty-state-desc">Try different keywords or check your filters.</div>
+        </div>`;
+      return;
+    }
+
+    resultsEl.innerHTML = results.map(e => renderResult(e, q)).join('');
+  }
+
+  window.viewSearchEntry = (id) => {
+    const entry = Entries.getById(id);
+    if (!entry) return;
+    const mood = entry.mood ? getMoodMeta(entry.mood) : null;
+
+    const headerEl = document.getElementById('entry-view-header-content');
+    const bodyEl   = document.getElementById('entry-view-body');
+
+    if (headerEl) {
+      headerEl.innerHTML = `
+        <div class="entry-view-date">📅 ${formatDate(entry.date||entry.createdAt,{weekday:'long',month:'long',day:'numeric',year:'numeric'})}</div>
+        <div class="entry-view-title">${escape(entry.title)}</div>
+        <div class="entry-view-meta">
+          ${mood ? `<span class="mood-badge mood-${entry.mood}">${mood.emoji} ${mood.label}</span>` : ''}
+          ${(entry.tags||[]).map(t=>`<span class="tag tag-rose">${escape(t)}</span>`).join('')}
+        </div>`;
+    }
+
+    if (bodyEl) bodyEl.textContent = entry.content || '';
+    openModal('view-modal');
+  };
+
+  // Events
+  let debounceTimer;
+  searchInput.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(performSearch, 220);
+  });
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    performSearch();
+    searchInput.focus();
+  });
+
+  filterDate.addEventListener('change', performSearch);
+
+  ['filter-title','filter-content','filter-tags'].forEach(id => {
+    document.getElementById(id)?.addEventListener('change', performSearch);
+  });
+
+  setupModalClose('view-modal');
+  renderRecent();
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Settings — Customize your diary, manage data, and change preferences." />
+  <title>Settings — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+</head>
+<body>
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item active"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / Settings</div>
+        <h1 class="page-title">Settings</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div class="settings-layout">
+
+        <!-- Settings Nav -->
+        <div class="settings-nav">
+          <div class="settings-nav-item active" data-section="profile">👤 Profile</div>
+          <div class="settings-nav-item" data-section="appearance">🎨 Appearance</div>
+          <div class="settings-nav-item" data-section="security">🔐 Security</div>
+          <div class="settings-nav-item" data-section="data">📦 Data</div>
+          <div class="settings-nav-item" data-section="about">ℹ️ About</div>
+        </div>
+
+        <!-- Settings Sections -->
+        <div>
+
+          <!-- ── Profile ─────────────────────────────────── -->
+          <div id="section-profile" class="settings-section card">
+            <div class="settings-section-title">Profile</div>
+            <div class="settings-section-desc">Personalize how your diary greets you.</div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Display Name</div>
+                <div class="settings-row-desc">Shown in greetings and the sidebar</div>
+              </div>
+              <div class="settings-row-control" style="display:flex;gap:var(--space-2);align-items:center">
+                <input type="text" id="settings-username" class="form-input" style="width:180px" placeholder="Your name" maxlength="40" />
+                <button id="save-username-btn" class="btn btn-primary btn-sm">Save</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Member Since</div>
+                <div class="settings-row-desc">When you started your digital diary</div>
+              </div>
+              <div id="member-since" style="font-size:.875rem;color:var(--text-muted)">—</div>
+            </div>
+          </div>
+
+          <!-- ── Appearance ──────────────────────────────── -->
+          <div id="section-appearance" class="settings-section card hidden">
+            <div class="settings-section-title">Appearance</div>
+            <div class="settings-section-desc">Customize the look and feel of your diary.</div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Theme</div>
+                <div class="settings-row-desc">Choose between light and dark mode</div>
+              </div>
+              <div class="settings-row-control">
+                <select id="settings-theme" class="form-select" style="width:160px">
+                  <option value="light">☀️ Light Mode</option>
+                  <option value="dark">🌙 Dark Mode</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Quick Theme Toggle</div>
+                <div class="settings-row-desc">Switch theme instantly</div>
+              </div>
+              <div class="settings-row-control">
+                <label class="toggle">
+                  <input type="checkbox" id="quick-theme-toggle" />
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Security ───────────────────────────────── -->
+          <div id="section-security" class="settings-section card hidden">
+            <div class="settings-section-title">Security</div>
+            <div class="settings-section-desc">Manage your vault PIN and privacy settings.</div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Vault PIN</div>
+                <div class="settings-row-desc" id="vault-pin-status">Not set</div>
+              </div>
+              <div class="settings-row-control">
+                <a href="vault.html" id="settings-change-pin" class="btn btn-secondary btn-sm">Manage PIN →</a>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Private Notes</div>
+                <div class="settings-row-desc">Notes stored in the encrypted vault</div>
+              </div>
+              <div style="font-size:.875rem;color:var(--text-muted)" id="vault-note-count">—</div>
+            </div>
+          </div>
+
+          <!-- ── Data ────────────────────────────────────── -->
+          <div id="section-data" class="settings-section card hidden">
+            <div class="settings-section-title">Data Management</div>
+            <div class="settings-section-desc">Export, import, or reset your diary data.</div>
+
+            <!-- Overview Stats -->
+            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-3);margin-bottom:var(--space-6)">
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:var(--space-4);text-align:center">
+                <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--text-primary)" id="stat-entries">—</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">Diary Entries</div>
+              </div>
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:var(--space-4);text-align:center">
+                <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--text-primary)" id="stat-reminders">—</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">Reminders</div>
+              </div>
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:var(--space-4);text-align:center">
+                <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--text-primary)" id="stat-dates">—</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">Important Dates</div>
+              </div>
+              <div style="background:var(--bg-secondary);border-radius:var(--radius-md);padding:var(--space-4);text-align:center">
+                <div style="font-family:var(--font-display);font-size:1.4rem;font-weight:700;color:var(--text-primary)" id="stat-moods">—</div>
+                <div style="font-size:.75rem;color:var(--text-muted)">Mood Logs</div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Export Data</div>
+                <div class="settings-row-desc">Download all diary data as a JSON backup file</div>
+              </div>
+              <div class="settings-row-control">
+                <button id="export-btn" class="btn btn-secondary btn-sm">📥 Export JSON</button>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div>
+                <div class="settings-row-label">Import Data</div>
+                <div class="settings-row-desc">Restore from a previously exported backup file</div>
+              </div>
+              <div class="settings-row-control">
+                <button id="import-btn" class="btn btn-secondary btn-sm">📤 Import JSON</button>
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="danger-zone">
+              <div class="danger-zone-title">⚠️ Danger Zone</div>
+              <div class="settings-row" style="border-bottom:none;padding:0">
+                <div>
+                  <div class="settings-row-label" style="color:#b04030">Reset All Data</div>
+                  <div class="settings-row-desc">Permanently delete all entries, reminders, and settings</div>
+                </div>
+                <div class="settings-row-control">
+                  <button id="open-reset-modal" class="btn btn-danger btn-sm">🗑️ Reset</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── About ────────────────────────────────────── -->
+          <div id="section-about" class="settings-section card hidden">
+            <div class="settings-section-title">About Digital Diary</div>
+            <div class="settings-section-desc">Version 1.0 — A beautiful personal diary for capturing your story.</div>
+
+            <div style="text-align:center;padding:var(--space-8)">
+              <div style="font-size:4rem;margin-bottom:var(--space-4);animation:floatIcon 3s ease-in-out infinite">📖</div>
+              <div style="font-family:var(--font-display);font-size:1.5rem;font-weight:700;color:var(--text-primary);margin-bottom:var(--space-2)">Digital Diary</div>
+              <div style="font-size:.875rem;color:var(--text-muted);line-height:1.8;max-width:400px;margin:0 auto var(--space-6)">
+                A premium personal journaling experience built with pure HTML, CSS, and JavaScript.
+                All data stays in your browser — completely private, no servers.
+              </div>
+              <div style="display:flex;justify-content:center;gap:var(--space-4);flex-wrap:wrap">
+                <div class="tag tag-sage">🔒 100% Private</div>
+                <div class="tag tag-rose">📱 Responsive</div>
+                <div class="tag tag-brown">✨ No Backend</div>
+                <div class="tag tag-lavender">🌙 Dark Mode</div>
+              </div>
+            </div>
+
+            <div class="settings-row">
+              <div class="settings-row-label">Built with</div>
+              <div style="font-size:.875rem;color:var(--text-muted)">HTML · CSS · Vanilla JavaScript</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Storage</div>
+              <div style="font-size:.875rem;color:var(--text-muted)">Browser LocalStorage</div>
+            </div>
+            <div class="settings-row">
+              <div class="settings-row-label">Version</div>
+              <div style="font-size:.875rem;color:var(--text-muted)">1.0.0</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── Confirm Reset Modal ──────────────────────────────────── -->
+<div id="confirm-reset-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:460px">
+    <div class="modal-header">
+      <h2 class="modal-title">Reset All Data</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-secondary);line-height:1.8;margin-bottom:var(--space-5)">
+        ⚠️ This will permanently delete <strong>all</strong> your diary entries, reminders, important dates, mood logs, and settings. This action <strong>cannot be undone</strong>.
+      </p>
+      <div class="form-group">
+        <label class="form-label" for="reset-confirm-text">Type <strong>DELETE</strong> to confirm</label>
+        <input type="text" id="reset-confirm-text" class="form-input" placeholder="Type DELETE" autocomplete="off" />
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('confirm-reset-modal')">Cancel</button>
+      <button id="confirm-reset-btn" class="btn btn-danger">Delete Everything</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="js/app.js"></script>
+<script src="js/settings.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Member since
+    const profile = Profile.get();
+    const sinceEl = document.getElementById('member-since');
+    if (sinceEl && profile.joinedAt) {
+      sinceEl.textContent = formatDate(profile.joinedAt, { month:'long', day:'numeric', year:'numeric' });
+    }
+
+    // Vault note count
+    const vnEl = document.getElementById('vault-note-count');
+    if (vnEl) vnEl.textContent = `${Vault.getNotes().length} notes`;
+
+    // Quick theme toggle sync
+    const qt = document.getElementById('quick-theme-toggle');
+    if (qt) {
+      qt.checked = Settings.get().theme === 'dark';
+      qt.addEventListener('change', () => {
+        applyTheme(qt.checked ? 'dark' : 'light');
+        const themeSelect = document.getElementById('settings-theme');
+        if (themeSelect) themeSelect.value = qt.checked ? 'dark' : 'light';
+      });
+    }
+  });
+</script>
+</body>
+</html>

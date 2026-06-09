@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Private Vault — Securely store your most private notes behind a PIN." />
+  <title>Private Vault — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/calendar.css" />
+</head>
+<body>
+<div class="app-layout">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item active"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / Private Vault</div>
+        <h1 class="page-title">Private Vault</h1>
+      </div>
+      <div class="page-actions">
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+        <button id="change-pin-btn" class="btn btn-secondary btn-sm" style="display:none">🔑 Change PIN</button>
+        <button id="lock-vault-btn" class="btn btn-ghost btn-sm" style="display:none">🔒 Lock</button>
+        <button id="new-note-btn" class="btn btn-primary" style="display:none">＋ New Note</button>
+      </div>
+    </header>
+
+    <div class="page-body" style="display:flex;align-items:flex-start;justify-content:center">
+
+      <!-- ── First-Time Setup ─────────────────────────────── -->
+      <div id="vault-setup" class="vault-lock-screen hidden">
+        <div class="vault-lock-card">
+          <div class="vault-icon">🔐</div>
+          <div class="vault-title">Create Your Vault PIN</div>
+          <div class="vault-desc">Set a 4-digit PIN to protect your private notes. Keep it safe!</div>
+
+          <div id="setup-step1">
+            <div style="font-size:.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:var(--space-4)">Enter a 4-digit PIN</div>
+            <div class="pin-input-group" id="setup-pin-step1">
+              <div class="pin-digits d-flex gap-3">
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 1" />
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 2" />
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 3" />
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 4" />
+              </div>
+            </div>
+          </div>
+
+          <div id="setup-step2" class="hidden">
+            <div style="font-size:.85rem;font-weight:600;color:var(--text-secondary);margin-bottom:var(--space-4)">Confirm your PIN</div>
+            <div class="pin-input-group" id="setup-pin-step2">
+              <div class="pin-digits d-flex gap-3">
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm PIN digit 1" />
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm PIN digit 2" />
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm PIN digit 3" />
+                <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm PIN digit 4" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Lock Screen ──────────────────────────────────── -->
+      <div id="vault-lock-screen" class="vault-lock-screen hidden">
+        <div class="vault-lock-card">
+          <div class="vault-icon">🔐</div>
+          <div class="vault-title">Private Vault</div>
+          <div class="vault-desc">Enter your 4-digit PIN to access your private notes.</div>
+
+          <div id="pin-error" class="pin-error hidden">
+            ❌ Incorrect PIN. Please try again.
+          </div>
+
+          <div class="pin-input-group" id="lock-pin-inputs">
+            <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 1" />
+            <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 2" />
+            <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 3" />
+            <input type="tel" class="pin-digit" maxlength="1" aria-label="PIN digit 4" />
+          </div>
+
+          <div style="font-size:.75rem;color:var(--text-light);margin-top:var(--space-3)">
+            Tip: Enter all 4 digits to unlock automatically
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Unlocked Vault ───────────────────────────────── -->
+      <div id="vault-unlocked" class="hidden" style="width:100%">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-6)">
+          <div class="vault-status">
+            <div class="vault-status-dot"></div>
+            Vault Unlocked — Session Only
+          </div>
+        </div>
+
+        <!-- Vault Notes Grid -->
+        <div id="vault-notes-grid" class="vault-notes-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- ── Vault Note Modal ─────────────────────────────────────── -->
+<div id="vault-note-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="vault-modal-title">New Private Note</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label" for="vn-title">Note Title *</label>
+        <input type="text" id="vn-title" class="form-input" placeholder="Note title…" maxlength="100" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="vn-content">Content</label>
+        <textarea id="vn-content" class="form-textarea" placeholder="Your private thoughts…" rows="10" style="min-height:200px"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('vault-note-modal')">Cancel</button>
+      <button id="save-vault-note-btn" class="btn btn-primary">🔐 Save Securely</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── View Note Modal ──────────────────────────────────────── -->
+<div id="vault-view-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:620px">
+    <div class="modal-header">
+      <h2 class="modal-title">Private Note</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="entry-view-header" id="vault-view-header"></div>
+    <div class="entry-view-body" id="vault-view-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" id="vault-view-edit-btn">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Change PIN Modal ─────────────────────────────────────── -->
+<div id="change-pin-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:400px;text-align:center">
+    <div class="modal-header">
+      <h2 class="modal-title">Change Vault PIN</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="change-pin-step1">
+        <div style="margin-bottom:var(--space-4);color:var(--text-secondary);font-size:.875rem">Enter your current PIN</div>
+        <div class="pin-input-group" id="change-old-pin">
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Current PIN digit 1" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Current PIN digit 2" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Current PIN digit 3" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Current PIN digit 4" />
+        </div>
+      </div>
+      <div id="change-pin-step2" class="hidden">
+        <div style="margin-bottom:var(--space-4);color:var(--text-secondary);font-size:.875rem">Enter your new PIN</div>
+        <div class="pin-input-group" id="change-new-pin">
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="New PIN digit 1" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="New PIN digit 2" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="New PIN digit 3" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="New PIN digit 4" />
+        </div>
+      </div>
+      <div id="change-pin-step3" class="hidden">
+        <div style="margin-bottom:var(--space-4);color:var(--text-secondary);font-size:.875rem">Confirm your new PIN</div>
+        <div class="pin-input-group" id="change-confirm-pin">
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm new PIN digit 1" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm new PIN digit 2" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm new PIN digit 3" />
+          <input type="tel" class="pin-digit" maxlength="1" aria-label="Confirm new PIN digit 4" />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Confirm Delete ───────────────────────────────────────── -->
+<div id="confirm-delete-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2 class="modal-title">Delete Note</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-secondary);line-height:1.7">Delete <strong id="confirm-delete-name"></strong>? This cannot be undone.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('confirm-delete-modal')">Cancel</button>
+      <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+<script src="js/app.js"></script>
+<script src="js/vault.js"></script>
+<script>
+  // Show/hide header buttons based on vault state
+  document.addEventListener('DOMContentLoaded', () => {
+    const observer = new MutationObserver(() => {
+      const unlocked = !document.getElementById('vault-unlocked')?.classList.contains('hidden');
+      document.getElementById('change-pin-btn').style.display = unlocked ? 'flex' : 'none';
+      document.getElementById('lock-vault-btn').style.display = unlocked ? 'flex' : 'none';
+      document.getElementById('new-note-btn').style.display   = unlocked ? 'flex' : 'none';
+    });
+
+    const unlocked = document.getElementById('vault-unlocked');
+    if (unlocked) observer.observe(unlocked, { attributes: true, attributeFilter: ['class'] });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary — Write, edit, and explore your daily diary entries." />
+  <title>My Diary — Digital Diary</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/diary.css" />
+</head>
+<body>
+<div class="app-layout">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">📖</div>
+      <span class="sidebar-logo-text">Digital Diary</span>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+      <a href="dashboard.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Dashboard</span></a>
+      <a href="diary.html" class="nav-item active"><span class="nav-icon">📝</span><span class="nav-label">My Diary</span></a>
+      <a href="calendar.html" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">Calendar</span></a>
+      <div class="nav-section-label">Manage</div>
+      <a href="reminders.html" class="nav-item"><span class="nav-icon">⏰</span><span class="nav-label">Reminders</span><span class="nav-badge hidden" id="reminders-badge">0</span></a>
+      <a href="important-dates.html" class="nav-item"><span class="nav-icon">🎂</span><span class="nav-label">Important Dates</span></a>
+      <a href="vault.html" class="nav-item"><span class="nav-icon">🔐</span><span class="nav-label">Private Vault</span></a>
+      <div class="nav-section-label">Insights</div>
+      <a href="mood-tracker.html" class="nav-item"><span class="nav-icon">😊</span><span class="nav-label">Mood Tracker</span></a>
+      <a href="search.html" class="nav-item"><span class="nav-icon">🔍</span><span class="nav-label">Search</span></a>
+      <div class="nav-section-label">Preferences</div>
+      <a href="settings.html" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">Settings</span></a>
+    </div>
+    <div class="sidebar-footer">
+      <div class="sidebar-user">
+        <div class="user-avatar" id="sidebar-avatar">DD</div>
+        <div class="user-info">
+          <div class="user-name" id="sidebar-username">My Diary</div>
+          <div class="user-tagline">Digital Journal</div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sidebar-overlay"></div>
+
+  <main class="main-content" role="main">
+    <header class="page-header">
+      <div class="page-title-group">
+        <div class="page-breadcrumb">Home / My Diary</div>
+        <h1 class="page-title">My Diary</h1>
+      </div>
+      <div class="page-actions">
+        <div class="search-bar">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="diary-search" placeholder="Search entries…" aria-label="Search diary entries" />
+        </div>
+        <button id="theme-toggle" class="btn btn-ghost btn-icon" title="Toggle theme">🌙</button>
+        <button id="new-entry-btn" class="btn btn-primary">✏️ New Entry</button>
+      </div>
+    </header>
+
+    <div class="page-body">
+
+      <!-- Filter Controls -->
+      <div class="diary-controls">
+        <div class="filter-group">
+          <span style="font-size:.8rem;color:var(--text-muted);font-weight:600">Filter:</span>
+          <button class="filter-chip active" data-filter="all">All Entries</button>
+          <button class="filter-chip" data-filter="happy">😊 Happy</button>
+          <button class="filter-chip" data-filter="excited">🌟 Excited</button>
+          <button class="filter-chip" data-filter="calm">😌 Calm</button>
+          <button class="filter-chip" data-filter="productive">💪 Productive</button>
+          <button class="filter-chip" data-filter="tired">😴 Tired</button>
+          <button class="filter-chip" data-filter="sad">💙 Sad</button>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:var(--space-2)">
+          <button id="view-grid" class="btn btn-secondary btn-sm active" title="Grid view" aria-label="Grid view">⊞</button>
+          <button id="view-list" class="btn btn-secondary btn-sm" title="List view" aria-label="List view">☰</button>
+        </div>
+      </div>
+
+      <!-- Diary Grid / List -->
+      <div id="diary-grid-container" class="diary-grid">
+        <!-- Skeleton loading -->
+        <div class="skeleton" style="height:220px;border-radius:20px"></div>
+        <div class="skeleton" style="height:220px;border-radius:20px"></div>
+        <div class="skeleton" style="height:220px;border-radius:20px"></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ── Entry Editor Modal ──────────────────────────────────── -->
+<div id="entry-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="entry-modal-title" aria-hidden="true">
+  <div class="modal" style="max-width:780px">
+    <div class="modal-header">
+      <h2 class="modal-title" id="entry-modal-title">New Diary Entry</h2>
+      <button class="modal-close" aria-label="Close editor">✕</button>
+    </div>
+    <div class="modal-body" style="padding:0">
+      <div class="editor-layout" style="padding:var(--space-6)">
+        <!-- Main Editor Area -->
+        <div class="editor-main">
+          <div class="form-group">
+            <label class="form-label" for="entry-title">Entry Title</label>
+            <input type="text" id="entry-title" class="form-input"
+                   placeholder="What's on your mind today?"
+                   maxlength="120" autocomplete="off" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="entry-date">Date</label>
+            <input type="date" id="entry-date" class="form-input" />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Your Thoughts</label>
+            <div class="editor-toolbar" role="toolbar" aria-label="Text formatting">
+              <button class="toolbar-btn" data-format="bold" title="Bold" onclick="wrapText('**')"><strong>B</strong></button>
+              <button class="toolbar-btn" data-format="italic" title="Italic" onclick="wrapText('_')"><em>I</em></button>
+              <div class="toolbar-separator"></div>
+              <button class="toolbar-btn" title="Today's date" onclick="insertToday()">📅</button>
+              <button class="toolbar-btn" title="Add bullet point" onclick="insertBullet()">•</button>
+              <button class="toolbar-btn" title="Add line" onclick="insertHRule()">—</button>
+              <div class="toolbar-separator"></div>
+              <span id="autosave-indicator" class="autosave-indicator">
+                <span class="autosave-dot"></span> Draft saved
+              </span>
+            </div>
+            <textarea id="entry-content" class="entry-textarea"
+                      placeholder="Dear diary…&#10;&#10;Today I felt…" rows="14"
+                      aria-label="Entry content"></textarea>
+            <div class="char-counter">
+              <span id="char-count">0</span> characters
+            </div>
+          </div>
+        </div>
+
+        <!-- Editor Sidebar -->
+        <div class="editor-sidebar">
+          <div class="card">
+            <div class="card-title" style="margin-bottom:var(--space-4)">Today's Mood</div>
+            <div class="mood-selector">
+              <button class="mood-btn" data-mood="happy"       aria-label="Mood: Happy">
+                <span class="mood-btn-emoji">😊</span>
+                <span class="mood-btn-label">Happy</span>
+              </button>
+              <button class="mood-btn" data-mood="excited"     aria-label="Mood: Excited">
+                <span class="mood-btn-emoji">🌟</span>
+                <span class="mood-btn-label">Excited</span>
+              </button>
+              <button class="mood-btn" data-mood="calm"        aria-label="Mood: Calm">
+                <span class="mood-btn-emoji">😌</span>
+                <span class="mood-btn-label">Calm</span>
+              </button>
+              <button class="mood-btn" data-mood="productive"  aria-label="Mood: Productive">
+                <span class="mood-btn-emoji">💪</span>
+                <span class="mood-btn-label">Focus</span>
+              </button>
+              <button class="mood-btn" data-mood="tired"       aria-label="Mood: Tired">
+                <span class="mood-btn-emoji">😴</span>
+                <span class="mood-btn-label">Tired</span>
+              </button>
+              <button class="mood-btn" data-mood="sad"         aria-label="Mood: Sad">
+                <span class="mood-btn-emoji">💙</span>
+                <span class="mood-btn-label">Sad</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-title" style="margin-bottom:var(--space-3)">Tags</div>
+            <div class="form-hint" style="margin-bottom:var(--space-3)">Press Enter or comma to add</div>
+            <div id="tags-container" class="tags-container" role="group" aria-label="Entry tags">
+              <input class="tags-input" placeholder="gratitude, travel, idea…" aria-label="Add tag" />
+            </div>
+          </div>
+
+          <div class="card" style="background:linear-gradient(135deg,rgba(138,173,143,.12),rgba(201,168,76,.08));border-color:var(--sage-light)">
+            <div style="font-size:.78rem;color:var(--sage-dark);font-weight:600;margin-bottom:var(--space-2)">✨ Writing Tips</div>
+            <ul style="font-size:.75rem;color:var(--text-muted);line-height:1.8;padding-left:var(--space-4)">
+              <li>Start with how you feel</li>
+              <li>No grammar rules here!</li>
+              <li>Include small details</li>
+              <li>Be honest with yourself</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('entry-modal')">Cancel</button>
+      <button id="save-entry-btn" class="btn btn-primary">💾 Save Entry</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── View Entry Modal ─────────────────────────────────────── -->
+<div id="view-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="view-modal-title" aria-hidden="true">
+  <div class="modal entry-view-modal" style="max-width:680px">
+    <div class="modal-header">
+      <h2 class="modal-title" id="view-modal-title">Diary Entry</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="entry-view-header" id="entry-view-header-content"></div>
+    <div class="entry-view-body" id="entry-view-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" id="view-delete-btn">🗑️ Delete</button>
+      <button class="btn btn-primary" id="view-edit-btn">✏️ Edit</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── Confirm Delete Modal ─────────────────────────────────── -->
+<div id="confirm-delete-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <h2 class="modal-title">Delete Entry</h2>
+      <button class="modal-close" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--text-secondary);line-height:1.7">
+        Are you sure you want to delete <strong id="confirm-delete-name"></strong>? This action cannot be undone.
+      </p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('confirm-delete-modal')">Cancel</button>
+      <button id="confirm-delete-btn" class="btn btn-danger">Delete Forever</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container"></div>
+
+<script src="js/app.js"></script>
+<script src="js/diary.js"></script>
+<script>
+  // Toolbar helpers
+  function wrapText(marker) {
+    const ta = document.getElementById('entry-content');
+    if (!ta) return;
+    const start = ta.selectionStart, end = ta.selectionEnd;
+    const text  = ta.value;
+    const sel   = text.slice(start, end) || 'text';
+    ta.value    = text.slice(0, start) + marker + sel + marker + text.slice(end);
+    ta.focus();
+    ta.selectionStart = start + marker.length;
+    ta.selectionEnd   = start + marker.length + sel.length;
+    updateCharCounter();
+  }
+
+  function insertToday() {
+    const ta = document.getElementById('entry-content');
+    if (!ta) return;
+    const pos    = ta.selectionStart;
+    const today  = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+    ta.value     = ta.value.slice(0, pos) + today + ta.value.slice(pos);
+    ta.focus();
+    updateCharCounter();
+  }
+
+  function insertBullet() {
+    const ta = document.getElementById('entry-content');
+    if (!ta) return;
+    const pos = ta.selectionStart;
+    ta.value  = ta.value.slice(0, pos) + '\n• ' + ta.value.slice(pos);
+    ta.selectionStart = ta.selectionEnd = pos + 3;
+    ta.focus();
+    updateCharCounter();
+  }
+
+  function insertHRule() {
+    const ta = document.getElementById('entry-content');
+    if (!ta) return;
+    const pos = ta.selectionStart;
+    ta.value  = ta.value.slice(0, pos) + '\n\n——————\n\n' + ta.value.slice(pos);
+    ta.focus();
+    updateCharCounter();
+  }
+
+  // Handle pending entry view (from calendar)
+  const openId = sessionStorage.getItem('open_entry');
+  if (openId) {
+    sessionStorage.removeItem('open_entry');
+    setTimeout(() => viewEntry(openId), 400);
+  }
+</script>
+</body>
+</html>
