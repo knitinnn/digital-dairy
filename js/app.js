@@ -65,14 +65,27 @@ const Storage = {
 
 /* ── Profile ───────────────────────────────────────────────── */
 const Profile = {
-  get()   { return Storage.get(APP_KEYS.PROFILE, { name: 'Dear Diary', joinedAt: new Date().toISOString() }); },
+  get()   {
+    const current = Storage.get('currentUser');
+    if (current && current.name) {
+      return { name: current.name, joinedAt: current.joinedAt || new Date().toISOString() };
+    }
+    return Storage.get(APP_KEYS.PROFILE, { name: 'Dear Diary', joinedAt: new Date().toISOString() });
+  },
   set(p)  { Storage.set(APP_KEYS.PROFILE, p); },
 };
 
 /* ── Settings ──────────────────────────────────────────────── */
 const Settings = {
   defaults: { theme: 'light', username: '' },
-  get()     { return { ...this.defaults, ...Storage.get(APP_KEYS.SETTINGS, {}) }; },
+  get()     {
+    const s = { ...this.defaults, ...Storage.get(APP_KEYS.SETTINGS, {}) };
+    const current = Storage.get('currentUser');
+    if (current && current.name) {
+      s.username = current.name;
+    }
+    return s;
+  },
   set(s)    { Storage.set(APP_KEYS.SETTINGS, s); },
   update(k, v) {
     const s = this.get(); s[k] = v; this.set(s);
@@ -471,6 +484,16 @@ function initSidebar() {
   if (badge) {
     badge.textContent = pending;
     badge.classList.toggle('hidden', pending === 0);
+  }
+
+  /* ── Logout Button ── */
+  const logoutBtn = document.getElementById('logout-btn');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('currentUser');
+      window.location.replace('index.html');
+    });
   }
 }
 

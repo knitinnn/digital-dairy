@@ -1,6 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+  <!-- Pre-render Session Guard: Redirect to login if not authenticated -->
+  <script>
+    (function() {
+      if (!localStorage.getItem('currentUser')) {
+        window.location.replace('index.html');
+      }
+    })();
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Digital Diary Settings — Customize your diary, manage data, and change preferences." />
@@ -37,6 +45,9 @@
           <div class="user-name" id="sidebar-username">My Diary</div>
           <div class="user-tagline">Digital Journal</div>
         </div>
+        <button id="logout-btn" class="btn btn-ghost btn-icon" title="Logout" aria-label="Logout" style="margin-left: auto; padding: 4px; min-width: 36px; height: 36px;">
+          🚪
+        </button>
       </div>
     </div>
   </nav>
