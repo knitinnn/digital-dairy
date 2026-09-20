@@ -38,10 +38,11 @@ const AuthStorage = {
   // Set currently logged-in user session
   setCurrentUser(user) {
     try {
-      // Store standard session details: name, mobile, and session start time
+      // Store standard session details: username, name, and session start time
       const sessionData = {
+        username: user.username || user.name,
         name: user.name,
-        mobile: user.mobile,
+        mobile: user.mobile || '',
         joinedAt: user.joinedAt || new Date().toISOString()
       };
       localStorage.setItem('currentUser', JSON.stringify(sessionData));
@@ -56,27 +57,49 @@ const AuthStorage = {
     localStorage.removeItem('currentUser');
   },
 
-  // Find a registered user by mobile number
-  findUserByMobile(mobile) {
+  // Find a registered user by username (case-insensitive) or mobile
+  findUserByUsername(username) {
+    if (!username) return null;
     const users = this.getUsers();
-    return users.find(u => u.mobile === mobile) || null;
+    const query = username.trim().toLowerCase();
+    return users.find(u => 
+      (u.username && u.username.toLowerCase() === query) ||
+      (u.mobile && u.mobile.toLowerCase() === query)
+    ) || null;
+  },
+
+  // Legacy helper for mobile search
+  findUserByMobile(mobile) {
+    if (!mobile) return null;
+    const users = this.getUsers();
+    return users.find(u => u.mobile === mobile || (u.username && u.username.toLowerCase() === mobile.toLowerCase())) || null;
   },
 
   // Save new user registration
   registerUser(user) {
     const users = this.getUsers();
-    // Double check duplicate mobile number
-    if (users.some(u => u.mobile === user.mobile)) {
+    const username = (user.username || '').trim().toLowerCase();
+    
+    // Check duplicate username
+    if (users.some(u => (u.username && u.username.toLowerCase() === username))) {
+      return { success: false, message: 'Username is already taken. Please choose another.' };
+    }
+
+    // Also check mobile if provided
+    if (user.mobile && users.some(u => u.mobile === user.mobile)) {
       return { success: false, message: 'Mobile number already registered.' };
     }
+
     users.push({
-      name: user.name,
-      mobile: user.mobile,
+      username: (user.username || '').trim(),
+      name: user.name.trim(),
+      mobile: user.mobile ? user.mobile.trim() : '',
       password: user.password,
       securityQuestion: user.securityQuestion,
       securityAnswer: user.securityAnswer,
       joinedAt: new Date().toISOString()
     });
+
     const saved = this.saveUsers(users);
     if (saved) {
       return { success: true, message: 'Account created successfully. Please login.' };
@@ -85,12 +108,16 @@ const AuthStorage = {
     }
   },
 
-  // Update password for a registered user (by mobile)
-  resetPassword(mobile, newPassword) {
+  // Update password for a registered user (by username or mobile)
+  resetPassword(identifier, newPassword) {
     const users = this.getUsers();
-    const index = users.findIndex(u => u.mobile === mobile);
+    const query = identifier.trim().toLowerCase();
+    const index = users.findIndex(u => 
+      (u.username && u.username.toLowerCase() === query) ||
+      (u.mobile && u.mobile.toLowerCase() === query)
+    );
     if (index === -1) {
-      return { success: false, message: 'Mobile number not found.' };
+      return { success: false, message: 'Account not found.' };
     }
     users[index].password = newPassword;
     const saved = this.saveUsers(users);

@@ -402,6 +402,24 @@
    MOOD TRACKER MODULE
    ════════════════════════════════════════════════════════════ */
 
+.mood-select-grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+@media (min-width: 480px) {
+  .mood-select-grid-responsive {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .mood-select-grid-responsive {
+    grid-template-columns: repeat(6, 1fr);
+  }
+}
+
 .mood-tracker-layout {
   display: grid;
   grid-template-columns: 1fr;

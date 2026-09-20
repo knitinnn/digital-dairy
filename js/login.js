@@ -6,40 +6,29 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('login-form');
-  const mobileInput = document.getElementById('login-mobile');
+  const usernameInput = document.getElementById('login-username');
   const passwordInput = document.getElementById('login-password');
   const submitBtn = document.getElementById('login-submit-btn');
 
   if (!form) return;
 
   // Real-time validation
-  mobileInput.addEventListener('input', validateMobileField);
-  passwordInput.addEventListener('input', validatePasswordField);
-
-  // Restrict mobile number key inputs to digits only
-  mobileInput.addEventListener('keydown', (e) => {
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
-    if (allowedKeys.includes(e.key)) return;
-    if (isNaN(Number(e.key)) || e.key === ' ') {
-      e.preventDefault();
-    }
-  });
+  if (usernameInput) usernameInput.addEventListener('input', validateUsernameField);
+  if (passwordInput) passwordInput.addEventListener('input', validatePasswordField);
 
   /* ── Field Validators ── */
 
-  function validateMobileField() {
-    const value = mobileInput.value.trim();
+  function validateUsernameField() {
+    if (!usernameInput) return true;
+    const value = usernameInput.value.trim();
     if (!value) {
-      return validateField(mobileInput, false, 'Mobile number is required.');
+      return validateField(usernameInput, false, 'Username is required.');
     }
-    const numbersOnly = /^\d+$/.test(value);
-    if (!numbersOnly) {
-      return validateField(mobileInput, false, 'Mobile number must contain numbers only.');
-    }
-    return validateField(mobileInput, value.length === 10, 'Mobile number must be exactly 10 digits.');
+    return validateField(usernameInput, true, '');
   }
 
   function validatePasswordField() {
+    if (!passwordInput) return true;
     const value = passwordInput.value;
     return validateField(passwordInput, value !== '', 'Password is required.');
   }
@@ -49,10 +38,10 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     // Trigger validations
-    const isMobileValid = validateMobileField();
+    const isUsernameValid = validateUsernameField();
     const isPasswordValid = validatePasswordField();
 
-    if (!isMobileValid || !isPasswordValid) {
+    if (!isUsernameValid || !isPasswordValid) {
       showToast('Please fill all required fields.', 'error');
       const firstInvalid = form.querySelector('.invalid');
       if (firstInvalid) firstInvalid.focus();
@@ -61,18 +50,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setButtonLoading(submitBtn, true);
 
-    const mobile = mobileInput.value.trim();
+    const username = usernameInput.value.trim();
     const password = passwordInput.value;
 
     // Simulate network delay for premium loader experience
     setTimeout(() => {
-      const user = AuthStorage.findUserByMobile(mobile);
+      const user = AuthStorage.findUserByUsername(username);
 
       if (!user) {
         setButtonLoading(submitBtn, false);
-        showFieldError(mobileInput, 'Mobile number not registered.');
-        showToast('Mobile number not registered.', 'error');
-        mobileInput.focus();
+        showFieldError(usernameInput, 'Username not registered.');
+        showToast('Username not registered.', 'error');
+        usernameInput.focus();
         return;
       }
 

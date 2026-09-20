@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form Step 1
   const formStep1 = document.getElementById('form-step-1');
-  const mobileInput = document.getElementById('reset-mobile');
+  const usernameInput = document.getElementById('reset-username');
   const btnStep1 = document.getElementById('btn-step-1');
 
   // Form Step 2
@@ -29,39 +29,28 @@ document.addEventListener('DOMContentLoaded', () => {
   const btnStep3 = document.getElementById('btn-step-3');
 
   // State variables
-  let verifiedMobile = '';
+  let verifiedIdentifier = '';
   let matchedUser = null;
 
   // Real-time validators for step inputs
-  mobileInput.addEventListener('input', validateMobileField);
-  answerInput.addEventListener('input', validateAnswerField);
-  passwordInput.addEventListener('input', validateNewPasswordField);
-  confirmPasswordInput.addEventListener('input', validateConfirmNewPasswordField);
-
-  // Prevent non-numeric entries in mobile field
-  mobileInput.addEventListener('keydown', (e) => {
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
-    if (allowedKeys.includes(e.key)) return;
-    if (isNaN(Number(e.key)) || e.key === ' ') {
-      e.preventDefault();
-    }
-  });
+  if (usernameInput) usernameInput.addEventListener('input', validateUsernameField);
+  if (answerInput) answerInput.addEventListener('input', validateAnswerField);
+  if (passwordInput) passwordInput.addEventListener('input', validateNewPasswordField);
+  if (confirmPasswordInput) confirmPasswordInput.addEventListener('input', validateConfirmNewPasswordField);
 
   /* ── Validation Checks ── */
 
-  function validateMobileField() {
-    const value = mobileInput.value.trim();
+  function validateUsernameField() {
+    if (!usernameInput) return true;
+    const value = usernameInput.value.trim();
     if (!value) {
-      return validateField(mobileInput, false, 'Mobile number is required.');
+      return validateField(usernameInput, false, 'Username is required.');
     }
-    const numbersOnly = /^\d+$/.test(value);
-    if (!numbersOnly) {
-      return validateField(mobileInput, false, 'Mobile number must contain numbers only.');
-    }
-    return validateField(mobileInput, value.length === 10, 'Mobile number must be exactly 10 digits.');
+    return validateField(usernameInput, true, '');
   }
 
   function validateAnswerField() {
+    if (!answerInput) return true;
     const value = answerInput.value.trim();
     if (!value) {
       return validateField(answerInput, false, 'Security answer is required.');
@@ -70,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function validateNewPasswordField() {
+    if (!passwordInput) return true;
     const value = passwordInput.value;
     if (!value) {
       return validateField(passwordInput, false, 'New password is required.');
@@ -78,6 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function validateConfirmNewPasswordField() {
+    if (!confirmPasswordInput || !passwordInput) return true;
     const value = confirmPasswordInput.value;
     const newPassword = passwordInput.value;
     if (!value) {
@@ -109,103 +100,109 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* ── STEP 1: Find Account ── */
-  formStep1.addEventListener('submit', (e) => {
-    e.preventDefault();
+  if (formStep1) {
+    formStep1.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    if (!validateMobileField()) {
-      mobileInput.focus();
-      return;
-    }
-
-    setButtonLoading(btnStep1, true);
-    const mobileValue = mobileInput.value.trim();
-
-    setTimeout(() => {
-      const user = AuthStorage.findUserByMobile(mobileValue);
-      setButtonLoading(btnStep1, false);
-
-      if (user) {
-        // Save mobile and user in current session state
-        verifiedMobile = mobileValue;
-        matchedUser = user;
-
-        // Populate question and navigate to Step 2
-        questionDisplay.textContent = user.securityQuestion;
-        clearFormErrors(step2);
-        
-        transitionToStep(
-          step1, 
-          step2, 
-          'Answer the security question to verify your identity.'
-        );
-      } else {
-        showFieldError(mobileInput, 'Mobile number not registered.');
-        showToast('Mobile number not registered.', 'error');
-        mobileInput.focus();
+      if (!validateUsernameField()) {
+        usernameInput.focus();
+        return;
       }
-    }, 600);
-  });
+
+      setButtonLoading(btnStep1, true);
+      const usernameVal = usernameInput.value.trim();
+
+      setTimeout(() => {
+        const user = AuthStorage.findUserByUsername(usernameVal);
+        setButtonLoading(btnStep1, false);
+
+        if (user) {
+          // Save identifier and user in current session state
+          verifiedIdentifier = user.username || usernameVal;
+          matchedUser = user;
+
+          // Populate question and navigate to Step 2
+          questionDisplay.textContent = user.securityQuestion || "What is your secret key?";
+          clearFormErrors(step2);
+          
+          transitionToStep(
+            step1, 
+            step2, 
+            'Answer the security question to verify your identity.'
+          );
+        } else {
+          showFieldError(usernameInput, 'Username not registered.');
+          showToast('Username not registered.', 'error');
+          usernameInput.focus();
+        }
+      }, 600);
+    });
+  }
 
   /* ── STEP 2: Verify Answer ── */
-  formStep2.addEventListener('submit', (e) => {
-    e.preventDefault();
+  if (formStep2) {
+    formStep2.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    if (!validateAnswerField()) {
-      answerInput.focus();
-      return;
-    }
-
-    setButtonLoading(btnStep2, true);
-    const answerValue = answerInput.value.trim().toLowerCase();
-    const correctAnswer = matchedUser.securityAnswer.trim().toLowerCase();
-
-    setTimeout(() => {
-      setButtonLoading(btnStep2, false);
-
-      if (answerValue === correctAnswer) {
-        clearFormErrors(step3);
-        transitionToStep(
-          step2,
-          step3,
-          'Create a new password for your account.'
-        );
-      } else {
-        showFieldError(answerInput, 'Incorrect security answer.');
-        showToast('Incorrect security answer.', 'error');
+      if (!validateAnswerField()) {
         answerInput.focus();
+        return;
       }
-    }, 600);
-  });
+
+      setButtonLoading(btnStep2, true);
+      const answerValue = answerInput.value.trim().toLowerCase();
+      const correctAnswer = (matchedUser.securityAnswer || '').trim().toLowerCase();
+
+      setTimeout(() => {
+        setButtonLoading(btnStep2, false);
+
+        if (answerValue === correctAnswer) {
+          clearFormErrors(step3);
+          transitionToStep(
+            step2,
+            step3,
+            'Create a new password for your account.'
+          );
+        } else {
+          showFieldError(answerInput, 'Incorrect security answer.');
+          showToast('Incorrect security answer.', 'error');
+          answerInput.focus();
+        }
+      }, 600);
+    });
+  }
 
   /* ── STEP 3: Reset Password ── */
-  formStep3.addEventListener('submit', (e) => {
-    e.preventDefault();
+  if (formStep3) {
+    formStep3.addEventListener('submit', (e) => {
+      e.preventDefault();
 
-    const isPasswordValid = validateNewPasswordField();
-    const isConfirmValid = validateConfirmNewPasswordField();
+      const isPasswordValid = validateNewPasswordField();
+      const isConfirmValid = validateConfirmNewPasswordField();
 
-    if (!isPasswordValid || !isConfirmValid) {
-      const firstInvalid = formStep3.querySelector('.invalid');
-      if (firstInvalid) firstInvalid.focus();
-      return;
-    }
-
-    setButtonLoading(btnStep3, true);
-    const newPassword = passwordInput.value;
-
-    setTimeout(() => {
-      const result = AuthStorage.resetPassword(verifiedMobile, newPassword);
-      setButtonLoading(btnStep3, false);
-
-      if (result.success) {
-        showToast(result.message, 'success');
-        // Redirect back to Login page
-        setTimeout(() => {
-          window.location.href = 'index.html';
-        }, 1500);
-      } else {
-        showToast(result.message, 'error');
+      if (!isPasswordValid || !isConfirmValid) {
+        const firstInvalid = formStep3.querySelector('.invalid');
+        if (firstInvalid) firstInvalid.focus();
+        return;
       }
-    }, 800);
-  });
+
+      setButtonLoading(btnStep3, true);
+      const newPassword = passwordInput.value;
+
+      setTimeout(() => {
+        const result = AuthStorage.resetPassword(verifiedIdentifier, newPassword);
+        setButtonLoading(btnStep3, false);
+
+        if (result.success) {
+          showToast(result.message, 'success');
+          // Redirect back to Login page
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 1500);
+        } else {
+          showToast(result.message, 'error');
+        }
+      }, 800);
+    });
+  }
 });

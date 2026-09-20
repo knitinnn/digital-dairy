@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Digital Diary Login — Access your personal space for daily thoughts, memories, and reflections." />
+  <title>Login — Digital Diary</title>
+  <link rel="icon" type="image/png" href="../logo.png" />
+  
+  <!-- Pre-render Session Guard: Redirect to dashboard if already logged in -->
+  <script>
+    (function() {
+      if (localStorage.getItem('currentUser')) {
+        window.location.replace('dashboard.html');
+      }
+    })();
+  </script>
+
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="stylesheet" href="../css/auth.css" />
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-card">
+      <div class="auth-logo" aria-hidden="true">📖</div>
+      <h1 class="auth-title">Digital Diary</h1>
+      <p class="auth-subtitle">
+        Welcome back! Please log in to open your personal sanctuary.
+      </p>
+
+      <form id="login-form" novalidate>
+        <!-- Username -->
+        <div class="form-group">
+          <label class="form-label" for="login-username">Username</label>
+          <input type="text" id="login-username" class="form-input"
+                 placeholder="e.g. nitin_dev"
+                 maxlength="30" autocomplete="username" required />
+        </div>
+
+        <!-- Password -->
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <div class="password-input-container">
+            <input type="password" id="login-password" class="form-input"
+                   placeholder="Enter your password"
+                   maxlength="40" autocomplete="current-password" required />
+            <button type="button" class="password-toggle-btn" title="Show password" aria-label="Show password">👁️‍🗨️</button>
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-lg btn-full btn-round" style="margin-top: var(--space-4)">
+          Login to My Diary 🔑
+        </button>
+        
+        <!-- Forgot Password Link -->
+        <div style="text-align: center; margin-top: var(--space-4);">
+          <a href="forgot-password.html" class="form-hint" style="color: var(--rose-dark); font-weight: 600; text-decoration: none;">Forgot Password?</a>
+        </div>
+      </form>
+
+      <div class="auth-divider"></div>
+
+      <!-- Footer navigation -->
+      <div class="auth-footer-links">
+        Don't have an account? <a href="signup.html">Sign Up</a>
+      </div>
+
+      <div style="text-align: center; margin-top: var(--space-6); font-size: 0.75rem; color: var(--text-light)">
+        🔒 All data stored locally in your browser &bull; No servers
+      </div>
+    </div>
+
+    <!-- Site Footer -->
+    <footer class="site-footer" role="contentinfo">
+      <div class="site-footer-content">
+        © 2026 Digital Diary &bull; Developed by <a href="https://knitinnn.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="site-footer-link" aria-label="Nitin's Portfolio Website">Nitin.dev</a>
+      </div>
+    </footer>
+  </div>
+
+  <div class="toast-container"></div>
+
+  <!-- Scripts -->
+  <script src="../js/app.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/login.js"></script>
+</body>
+</html>

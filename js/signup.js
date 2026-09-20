@@ -6,8 +6,8 @@
 
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('signup-form');
+  const usernameInput = document.getElementById('signup-username');
   const nameInput = document.getElementById('signup-name');
-  const mobileInput = document.getElementById('signup-mobile');
   const passwordInput = document.getElementById('signup-password');
   const confirmPasswordInput = document.getElementById('signup-confirm-password');
   const questionSelect = document.getElementById('signup-question');
@@ -17,48 +17,45 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!form) return;
 
   // Real-time Validation Triggers
-  nameInput.addEventListener('input', validateName);
-  mobileInput.addEventListener('input', validateMobileInput);
-  passwordInput.addEventListener('input', validatePassword);
-  confirmPasswordInput.addEventListener('input', validateConfirmPassword);
-  questionSelect.addEventListener('change', validateQuestion);
-  answerInput.addEventListener('input', validateAnswer);
-
-  // Allow only digits in mobile number field
-  mobileInput.addEventListener('keydown', (e) => {
-    // Allow special keys (Backspace, Delete, Arrow keys, Tab, Enter)
-    const allowedKeys = ['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab', 'Enter'];
-    if (allowedKeys.includes(e.key)) return;
-    
-    // Prevent non-numeric key presses
-    if (isNaN(Number(e.key)) || e.key === ' ') {
-      e.preventDefault();
-    }
-  });
+  if (usernameInput) usernameInput.addEventListener('input', validateUsername);
+  if (nameInput) nameInput.addEventListener('input', validateName);
+  if (passwordInput) passwordInput.addEventListener('input', validatePassword);
+  if (confirmPasswordInput) confirmPasswordInput.addEventListener('input', validateConfirmPassword);
+  if (questionSelect) questionSelect.addEventListener('change', validateQuestion);
+  if (answerInput) answerInput.addEventListener('input', validateAnswer);
 
   /* ── Validation Rules ── */
 
+  function validateUsername() {
+    if (!usernameInput) return true;
+    const value = usernameInput.value.trim();
+    if (!value) {
+      return validateField(usernameInput, false, 'Username is required.');
+    }
+    if (value.length < 3) {
+      return validateField(usernameInput, false, 'Username must be at least 3 characters.');
+    }
+    if (value.length > 30) {
+      return validateField(usernameInput, false, 'Username cannot exceed 30 characters.');
+    }
+    const validFormat = /^[a-zA-Z0-9_.]+$/.test(value);
+    if (!validFormat) {
+      return validateField(usernameInput, false, 'Only letters, numbers, dots, and underscores allowed.');
+    }
+    return validateField(usernameInput, true, '');
+  }
+
   function validateName() {
+    if (!nameInput) return true;
     const value = nameInput.value.trim();
     if (!value) {
       return validateField(nameInput, false, 'Full name is required.');
     }
-    return validateField(nameInput, value.length >= 3, 'Full name must be at least 3 characters long.');
-  }
-
-  function validateMobileInput() {
-    const value = mobileInput.value.trim();
-    if (!value) {
-      return validateField(mobileInput, false, 'Mobile number is required.');
-    }
-    const numbersOnly = /^\d+$/.test(value);
-    if (!numbersOnly) {
-      return validateField(mobileInput, false, 'Mobile number must contain numbers only.');
-    }
-    return validateField(mobileInput, value.length === 10, 'Mobile number must be exactly 10 digits.');
+    return validateField(nameInput, value.length >= 2, 'Full name must be at least 2 characters long.');
   }
 
   function validatePassword() {
+    if (!passwordInput) return true;
     const value = passwordInput.value;
     if (!value) {
       return validateField(passwordInput, false, 'Password is required.');
@@ -67,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function validateConfirmPassword() {
+    if (!confirmPasswordInput || !passwordInput) return true;
     const value = confirmPasswordInput.value;
     const password = passwordInput.value;
     if (!value) {
@@ -76,11 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function validateQuestion() {
+    if (!questionSelect) return true;
     const value = questionSelect.value;
     return validateField(questionSelect, value !== '', 'Please select a security question.');
   }
 
   function validateAnswer() {
+    if (!answerInput) return true;
     const value = answerInput.value.trim();
     if (!value) {
       return validateField(answerInput, false, 'Security answer is required.');
@@ -93,15 +93,15 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     // Trigger validation for all fields
+    const isUsernameValid = validateUsername();
     const isNameValid = validateName();
-    const isMobileValid = validateMobileInput();
     const isPasswordValid = validatePassword();
     const isConfirmValid = validateConfirmPassword();
     const isQuestionValid = validateQuestion();
     const isAnswerValid = validateAnswer();
 
     // Prevent submission if any field is invalid
-    if (!isNameValid || !isMobileValid || !isPasswordValid || !isConfirmValid || !isQuestionValid || !isAnswerValid) {
+    if (!isUsernameValid || !isNameValid || !isPasswordValid || !isConfirmValid || !isQuestionValid || !isAnswerValid) {
       showToast('Please fill all required fields correctly.', 'error');
       
       // Focus on the first invalid field
@@ -115,8 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Prepare registration data
     const registrationData = {
+      username: usernameInput.value.trim(),
       name: nameInput.value.trim(),
-      mobile: mobileInput.value.trim(),
       password: passwordInput.value,
       securityQuestion: questionSelect.value,
       securityAnswer: answerInput.value.trim()
@@ -136,9 +136,9 @@ document.addEventListener('DOMContentLoaded', () => {
         setButtonLoading(submitBtn, false);
         // Show validation/duplicate error
         showToast(result.message, 'error');
-        if (result.message.includes('registered')) {
-          showFieldError(mobileInput, 'Mobile number is already registered.');
-          mobileInput.focus();
+        if (result.message.toLowerCase().includes('username')) {
+          showFieldError(usernameInput, result.message);
+          usernameInput.focus();
         }
       }
     }, 800);

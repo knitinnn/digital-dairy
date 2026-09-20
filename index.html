@@ -1,88 +1,15 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Digital Diary Login — Access your personal space for daily thoughts, memories, and reflections." />
-  <title>Login — Digital Diary</title>
-  
-  <!-- Pre-render Session Guard: Redirect to dashboard if already logged in -->
+  <meta http-equiv="refresh" content="0; url=html/index.html" />
+  <title>Redirecting — Digital Diary</title>
+  <link rel="icon" type="image/png" href="logo.png" />
   <script>
-    (function() {
-      if (localStorage.getItem('currentUser')) {
-        window.location.replace('dashboard.html');
-      }
-    })();
+    window.location.replace('html/index.html');
   </script>
-
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="css/auth.css" />
 </head>
-<body>
-  <div class="auth-page">
-    <div class="auth-card">
-      <div class="auth-logo" aria-hidden="true">📖</div>
-      <h1 class="auth-title">Digital Diary</h1>
-      <p class="auth-subtitle">
-        Welcome back! Please log in to open your personal sanctuary.
-      </p>
-
-      <form id="login-form" novalidate>
-        <!-- Mobile Number -->
-        <div class="form-group">
-          <label class="form-label" for="login-mobile">Mobile Number</label>
-          <input type="tel" id="login-mobile" class="form-input"
-                 placeholder="e.g. 9876543210"
-                 maxlength="10" autocomplete="username" required />
-        </div>
-
-        <!-- Password -->
-        <div class="form-group">
-          <label class="form-label" for="login-password">Password</label>
-          <div class="password-input-container">
-            <input type="password" id="login-password" class="form-input"
-                   placeholder="Enter your password"
-                   maxlength="40" autocomplete="current-password" required />
-            <button type="button" class="password-toggle-btn" title="Show password" aria-label="Show password">👁️‍🗨️</button>
-          </div>
-        </div>
-
-        <!-- Submit Button -->
-        <button type="submit" id="login-submit-btn" class="btn btn-primary btn-lg btn-full btn-round" style="margin-top: var(--space-4)">
-          Login to My Diary 🔑
-        </button>
-        
-        <!-- Forgot Password Link -->
-        <div style="text-align: center; margin-top: var(--space-4);">
-          <a href="forgot-password.html" class="form-hint" style="color: var(--rose-dark); font-weight: 600; text-decoration: none;">Forgot Password?</a>
-        </div>
-      </form>
-
-      <div class="auth-divider"></div>
-
-      <!-- Footer navigation -->
-      <div class="auth-footer-links">
-        Don't have an account? <a href="signup.html">Sign Up</a>
-      </div>
-
-      <div style="text-align: center; margin-top: var(--space-6); font-size: 0.75rem; color: var(--text-light)">
-        🔒 All data stored locally in your browser &bull; No servers
-      </div>
-    </div>
-
-    <!-- Site Footer -->
-    <footer class="site-footer" role="contentinfo">
-      <div class="site-footer-content">
-        © 2026 Digital Diary &bull; Developed by <a href="https://knitinnn.github.io/portfolio/" target="_blank" rel="noopener noreferrer" class="site-footer-link" aria-label="Nitin's Portfolio Website">Nitin.dev</a>
-      </div>
-    </footer>
-  </div>
-
-  <div class="toast-container"></div>
-
-  <!-- Scripts -->
-  <script src="js/app.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/login.js"></script>
+<body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; background-color: #faf7f2; color: #2d2620;">
+  <p>Redirecting to Digital Diary... <a href="html/index.html" style="color: #c47a5a; font-weight: 600;">Click here if you are not redirected automatically</a>.</p>
 </body>
 </html>

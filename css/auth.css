@@ -67,6 +67,14 @@
   margin: 0 auto var(--space-4);
   box-shadow: var(--shadow-md);
   animation: floatIcon 4s ease-in-out infinite;
+  overflow: hidden;
+}
+
+.auth-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
 }
 
 .auth-title {
