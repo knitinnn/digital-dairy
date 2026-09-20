@@ -2,7 +2,6 @@
 
 > 🌐 **Live Application:** [https://knitinnn.github.io/digital-dairy/](https://knitinnn.github.io/digital-dairy/)
 
-![Digital Diary Banner](logo.png)
 
 A personal journaling web application designed for capturing thoughts, tracking moods, managing reminders, remembering important milestones, and protecting private notes. Built with pure **HTML5**, **CSS3**, and **Vanilla JavaScript** — fast, responsive, and private with 100% client-side storage.
 
